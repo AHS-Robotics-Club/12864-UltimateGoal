@@ -15,7 +15,7 @@ public class TeleOpCool extends OpMode {
     private Motor fL, bL, fR, bR, eL, eR;
     private MecanumDrive drive;
     private RevIMU imu;
-    GamepadEx cont;
+    GamepadEx cont1, cont2;
     DifferentialOdometry odom;
 
     //Kanav is no longer cool
@@ -37,15 +37,16 @@ public class TeleOpCool extends OpMode {
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 //        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
 //        imu.init(parameters);
-        cont = new GamepadEx(gamepad1);
+        cont1 = new GamepadEx(gamepad1);
+        cont2 = new GamepadEx(gamepad2);
     }
     @Override
     public void loop() {
-        drive.driveRobotCentric(cont.getLeftX(), cont.getLeftY(), cont.getRightX());
+        drive.driveRobotCentric(cont1.getLeftX(), cont1.getLeftY(), cont1.getRightX());
 
-        telemetry.addData("StrafeSpeed", cont.getLeftX());
-        telemetry.addData("ForwardSpeed", cont.getLeftY());
-        telemetry.addData("TurnSpeed", cont.getRightX());
+        telemetry.addData("StrafeSpeed", cont1.getLeftX());
+        telemetry.addData("ForwardSpeed", cont1.getLeftY());
+        telemetry.addData("TurnSpeed", cont1.getRightX());
         telemetry.update();
     }
 }
