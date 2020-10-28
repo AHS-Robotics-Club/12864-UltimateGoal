@@ -27,6 +27,7 @@ public class TeleOpMain extends CommandOpMode {
     private ShooterSystem shooterSystem;
     private Com_Shoot shootCommand;
     private Com_NoShoot stp;
+
     private GamepadEx m_driverOp;
     private Button shooterStart, shooterStop;
 
@@ -44,6 +45,8 @@ public class TeleOpMain extends CommandOpMode {
         m_driverOp = new GamepadEx(gamepad1);
 
         driveCommand = new Com_Drive(mecDrive, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX);
+
+        //IMPORTANT: Note to self remember in the Drive System class I just flipped the turn speed and strafe speed
         shooterSystem = new ShooterSystem(shot);
         shootCommand = new Com_Shoot(shooterSystem);
         stp = new Com_NoShoot(shooterSystem);
@@ -56,6 +59,8 @@ public class TeleOpMain extends CommandOpMode {
         mecDrive.setDefaultCommand(driveCommand);
 
         register(mecDrive, shooterSystem);
+
+        schedule(driveCommand);
         waitForStart();
     }
 }
