@@ -61,7 +61,6 @@ public class TeleOpMain extends CommandOpMode {
         register(mecDrive, shooterSystem);
 
         schedule(driveCommand);
-        waitForStart();
     }
 }
 
