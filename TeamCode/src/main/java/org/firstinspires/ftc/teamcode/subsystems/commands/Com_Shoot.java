@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSystem;
 
+import java.util.function.DoubleSupplier;
+
 public class Com_Shoot extends CommandBase{
 
     private final ShooterSystem shooterSystem;
@@ -14,6 +16,6 @@ public class Com_Shoot extends CommandBase{
     }
     @Override
     public void execute(){
-        shooterSystem.shot();
+        shooterSystem.shoot();
     }
 }

@@ -14,7 +14,7 @@ public class Com_NoShoot extends CommandBase {
     }
     @Override
     public void execute(){
-        shooterSystem.stoop();
+        shooterSystem.stop();
     }
 
 }

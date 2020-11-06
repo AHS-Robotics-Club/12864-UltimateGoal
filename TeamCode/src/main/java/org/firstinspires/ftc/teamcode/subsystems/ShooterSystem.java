@@ -5,18 +5,29 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.TeleOpMain;
+
+import java.util.function.DoubleSupplier;
+
 public class ShooterSystem extends SubsystemBase {
-    private Motor kuunav;
+    private MotorEx shooterMotor;
+    private Telemetry telemetry;
+    private DoubleSupplier power;
 
-    public ShooterSystem(Motor ShooterMotor){
-        kuunav = ShooterMotor;
+    public ShooterSystem(MotorEx ShooterMotor, Telemetry telemetryIn, DoubleSupplier getPower){
+        shooterMotor = ShooterMotor;
+        telemetry = telemetryIn;
+        power = getPower;
     }
 
-    public void shot(){
-        kuunav.set(1);
+    public void shoot(){
+        telemetry.addData("Shooter speed", power.getAsDouble());
+        telemetry.update();
+        shooterMotor.set(power.getAsDouble());
     }
 
-    public void stoop(){
-        kuunav.set(0);
+    public void stop(){
+        shooterMotor.set(0);
     }
 }
