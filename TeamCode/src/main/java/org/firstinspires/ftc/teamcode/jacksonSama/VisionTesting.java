@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.jacksonSama;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -18,7 +18,7 @@ public class VisionTesting extends CommandOpMode {
     @Override
     public void run() {
         UGRectDetector.Stack stack = UGRectDetector.getStack();
-        motor = new Motor(hardwareMap, "test", Motor.GoBILDA.RPM_312);
+        motor = new Motor(hardwareMap, "test", Motor.GoBILDA.BARE);
 
         switch (stack) {
             case ZERO:

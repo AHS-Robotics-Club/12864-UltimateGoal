@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Jackson Homosexual")
 public class TestingForJackson extends LinearOpMode {
 
-    Motor motor;
+    Motor motor; //gg lol
     PIDController controller;
 
     @Override
