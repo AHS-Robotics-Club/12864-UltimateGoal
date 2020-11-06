@@ -22,6 +22,8 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public void shoot(){
+        telemetry.addData("Shooter speed", power.getAsDouble());
+        telemetry.update();
         shooterMotor.set(power.getAsDouble());
     }
 

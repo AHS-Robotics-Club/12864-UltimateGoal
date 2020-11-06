@@ -52,7 +52,7 @@ public class TeleOpMain extends CommandOpMode {
         m_driverOp = new GamepadEx(gamepad1);
         m_toolOp = new GamepadEx(gamepad2);
 
-        dpadDown = new GamepadButton(m_toolOp, GamepadKeys.Button.DPAD_DOWN)
+        dpadDown = new GamepadButton(m_driverOp, GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(new InstantCommand(() -> {
                     if (pwrSelect < 0.05) {
                         pwrSelect = 1;
@@ -60,7 +60,7 @@ public class TeleOpMain extends CommandOpMode {
                         pwrSelect -= 0.25;
                     }
                 }));
-        dpadUp = new GamepadButton(m_toolOp, GamepadKeys.Button.DPAD_UP)
+        dpadUp = new GamepadButton(m_driverOp, GamepadKeys.Button.DPAD_UP)
                 .whenPressed(new InstantCommand(() -> {
                     if (pwrSelect > 0.95) {
                         pwrSelect = 0;
