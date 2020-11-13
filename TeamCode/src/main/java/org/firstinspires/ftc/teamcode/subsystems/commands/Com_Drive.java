@@ -23,6 +23,6 @@ public class Com_Drive extends CommandBase {
 
     @Override
     public void execute(){
-        mecDrive.drive(m_strafe.getAsDouble(), m_forward.getAsDouble(), m_turn.getAsDouble());
+        mecDrive.drive(m_strafe.getAsDouble(), -m_forward.getAsDouble(), m_turn.getAsDouble());
     }
 }

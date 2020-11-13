@@ -28,6 +28,6 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public void stop(){
-        shooterMotor.set(0);
+        shooterMotor.stopMotor();
     }
 }
