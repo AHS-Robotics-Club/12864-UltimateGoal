@@ -8,15 +8,15 @@ import java.util.concurrent.TimeUnit;
 
 
 public class WobbleSystem extends SubsystemBase {
-    MotorEx rundhi;
+    MotorEx pickyUppy;
     public WobbleSystem(MotorEx pickMeUpDaddy){
-        rundhi = pickMeUpDaddy;
+        pickyUppy = pickMeUpDaddy;
     }
 
     public void spinMeRightRoundBaby(){
         //TODO: testing also change those names
-        rundhi.setTargetPosition(10);
-        rundhi.set(0.1);
+        pickyUppy.setTargetPosition(10);
+        pickyUppy.set(0.1);
     }
 }
 

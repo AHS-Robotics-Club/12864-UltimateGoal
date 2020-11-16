@@ -14,20 +14,34 @@ public class ShooterSystem extends SubsystemBase {
     private MotorEx shooterMotor;
     private Telemetry telemetry;
     private DoubleSupplier power;
+    private boolean shooterActive;
 
     public ShooterSystem(MotorEx ShooterMotor, Telemetry telemetryIn, DoubleSupplier getPower){
         shooterMotor = ShooterMotor;
         telemetry = telemetryIn;
         power = getPower;
+        shooterActive = true;
+
+    }
+    public boolean active() {
+        return shooterActive;
     }
 
+    public void toggle() {
+        shooterActive = !shooterActive;
+    }
     public void shoot(){
-        telemetry.addData("Shooter speed", power.getAsDouble());
-        telemetry.update();
         shooterMotor.set(power.getAsDouble());
     }
 
     public void stop(){
         shooterMotor.stopMotor();
+    }
+
+    @Override
+    public void periodic() {
+        telemetry.addData("Shooter power", power.getAsDouble());
+        telemetry.addData("Shooter active", shooterActive);
+        telemetry.update();
     }
 }
