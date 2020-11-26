@@ -7,23 +7,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Disabled
-@TeleOp(name="MotorEx testing")
-public class MotorExTest extends LinearOpMode {
+@TeleOp(name="Mooooto")
+public class MotorTesting extends LinearOpMode {
 
-    private MotorEx test;
+    private Motor test;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        test = new MotorEx(hardwareMap, "shot", Motor.GoBILDA.BARE);
+        test = new Motor(hardwareMap, "shot", Motor.GoBILDA.BARE);
         test.setRunMode(Motor.RunMode.VelocityControl);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                test.setVelocity(312.0 / 60 * 537.6 * 0.9);
+                test.set(1);
             }
-            else test.setVelocity(0);
+            else test.set(0);
         }
-        test.setVelocity(0);
+        test.set(0);
     }
 
 }

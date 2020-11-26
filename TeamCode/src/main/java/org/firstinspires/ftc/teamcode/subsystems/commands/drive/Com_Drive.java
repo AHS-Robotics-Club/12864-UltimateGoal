@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.commands;
+package org.firstinspires.ftc.teamcode.subsystems.commands.drive;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
@@ -23,7 +23,6 @@ public class Com_Drive extends CommandBase {
 
     @Override
     public void execute(){
-        //TODO: Check config and wiring to see what is up with this poopoo
         mecDrive.drive(m_strafe.getAsDouble(), m_forward.getAsDouble(), m_turn.getAsDouble());
     }
 }

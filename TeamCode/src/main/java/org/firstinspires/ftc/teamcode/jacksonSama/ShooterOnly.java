@@ -1,21 +1,18 @@
 package org.firstinspires.ftc.teamcode.jacksonSama;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.CRServo;
+import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSystem;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Drive;
+import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Drive;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_NoShoot;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Shoot;
 
@@ -25,7 +22,7 @@ public class ShooterOnly extends CommandOpMode {
     public double pwrSelect = 1.0;
 
     private Motor fL, bL, fR, bR;
-    private MotorEx shot;
+    private Motor shot;
 
     private DriveSystem mecDrive;
     private Com_Drive driveCommand;
@@ -34,22 +31,23 @@ public class ShooterOnly extends CommandOpMode {
     private Com_Shoot shootCommand;
     private Com_NoShoot stopCommand;
 
-    public GamepadEx m_driverOp, m_toolOp;
+    private GamepadEx m_driverOp, m_toolOp;
     private Button toggleShooter, dpadUp, dpadDown;
-
+    private RevIMU imu;
     @Override
     public void initialize() {
         fL = new Motor(hardwareMap, "fL");
         fR = new Motor(hardwareMap, "fR");
         bL = new Motor(hardwareMap, "bL");
         bR = new Motor(hardwareMap, "bR");
+        imu = new RevIMU(hardwareMap);
 
 
         //one of our motors is messed up so it has to be inverted woooooo
         bL.setInverted(true);
 
-        shot = new MotorEx(hardwareMap, "shot", Motor.GoBILDA.BARE);
-        shot.setRunMode(Motor.RunMode.VelocityControl);
+        shot = new Motor(hardwareMap, "shot", Motor.GoBILDA.BARE);
+//        shot.setRunMode(Motor.RunMode.VelocityControl);
 
         mecDrive = new DriveSystem(fL, fR, bL, bR);
 
@@ -73,18 +71,17 @@ public class ShooterOnly extends CommandOpMode {
                     }
                 }));
 
-        driveCommand = new Com_Drive(mecDrive, m_driverOp::getRightX, m_driverOp::getLeftY, m_driverOp::getLeftX);
+        driveCommand = new Com_Drive(mecDrive, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX);
 
         shooterSystem = new ShooterSystem(shot, telemetry, () -> pwrSelect);
         shootCommand = new Com_Shoot(shooterSystem);
         stopCommand = new Com_NoShoot(shooterSystem);
         toggleShooter = new GamepadButton(m_driverOp, GamepadKeys.Button.A)
-                .whenPressed(new ConditionalCommand(shootCommand, stopCommand, shooterSystem::active))
-                .whenReleased(new InstantCommand(shooterSystem::toggle));
+                .toggleWhenPressed(shootCommand);
 
         mecDrive.setDefaultCommand(driveCommand);
 
-        register(mecDrive, shooterSystem);
+        register(mecDrive);
 
         schedule(driveCommand);
     }

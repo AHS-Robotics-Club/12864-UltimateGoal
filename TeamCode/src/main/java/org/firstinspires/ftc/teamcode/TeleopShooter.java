@@ -1,34 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSystem;
-import org.firstinspires.ftc.teamcode.subsystems.RingPushSystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSystem;
-import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Drive;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_IntakeStart;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_IntakeStop;
+import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Drive;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_NoShoot;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PickUp;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Push;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Shoot;
 
 @TeleOp(name="Kanye West")
@@ -37,7 +24,7 @@ public class TeleopShooter extends CommandOpMode {
     public double pwrSelect = 1.0;
 
     private Motor fL, bL, fR, bR;
-    private MotorEx shot;
+    private Motor shot;
     private CRServo flick;
     private boolean isEnabled;
 
@@ -67,8 +54,8 @@ public class TeleopShooter extends CommandOpMode {
 
         flick = new CRServo(hardwareMap, "push");
 
-        shot = new MotorEx(hardwareMap, "shot", Motor.GoBILDA.BARE);
-        shot.setRunMode(Motor.RunMode.VelocityControl);
+        shot = new Motor(hardwareMap, "shot", Motor.GoBILDA.BARE);
+//        shot.setRunMode(Motor.RunMode.VelocityControl);
 
         mecDrive = new DriveSystem(fL, fR, bL, bR);
 

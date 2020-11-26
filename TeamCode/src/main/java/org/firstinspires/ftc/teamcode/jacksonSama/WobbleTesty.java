@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.jacksonSama;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Disabled
 @Autonomous(name="Aiden")
 public class WobbleTesty extends LinearOpMode {
 

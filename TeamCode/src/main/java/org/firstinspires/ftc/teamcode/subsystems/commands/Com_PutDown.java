@@ -6,11 +6,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 
-public class Com_PickUp extends CommandBase {
+public class Com_PutDown extends CommandBase {
+
     private final WobbleSystem wobblySystem;
     private final ElapsedTime time;
 
-    public Com_PickUp(WobbleSystem subby, ElapsedTime elapsedTime){
+    public Com_PutDown(WobbleSystem subby, ElapsedTime elapsedTime){
         wobblySystem = subby;
         time = elapsedTime;
         addRequirements(subby);
@@ -18,17 +19,18 @@ public class Com_PickUp extends CommandBase {
     @Override
     public void initialize(){
         time.reset();
-        wobblySystem.spinMeRightRoundBaby();
+        wobblySystem.motorDown();
     }
     @Override
     public void execute(){
     }
     @Override
     public void end(boolean interrupted){
-        wobblySystem.motorUp();
+        wobblySystem.putMeDownUwU();
     }
     @Override
     public boolean isFinished(){
-       return time.seconds() >= 1;
+        return time.seconds() >= 1;
     }
 }
+

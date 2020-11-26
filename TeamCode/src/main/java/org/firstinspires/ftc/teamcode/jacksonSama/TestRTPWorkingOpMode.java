@@ -18,15 +18,14 @@ public class TestRTPWorkingOpMode extends LinearOpMode {
 // set the run mode
         m_motor.setRunMode(Motor.RunMode.PositionControl);
 
-        m_motor.setPositionCoefficient(0.2);
+        m_motor.setPositionCoefficient(0.02);
+        m_motor.setTargetPosition(1200);      // an integer representing
 
 // set the target position
 // set the tolerance
         m_motor.setPositionTolerance(10);   // allowed maximum error
 
         m_motor.set(0);
-
-        m_motor.setDistancePerPulse(Math.PI * 2.0 / m_motor.getCPR());
 
         waitForStart();
 

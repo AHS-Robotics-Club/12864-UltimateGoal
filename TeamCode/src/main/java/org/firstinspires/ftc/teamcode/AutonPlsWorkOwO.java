@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.DifferentialDrive;
+import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
@@ -27,7 +28,7 @@ public class AutonPlsWorkOwO extends LinearOpMode {
     private static final double WHEEL_DIAMETER = 4.0;
     private static double TICKS_PER_REV;
     private Timing.Timer timeywimey = new Timing.Timer(5,TimeUnit.SECONDS);
-
+    private RevIMU imu;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,6 +36,8 @@ public class AutonPlsWorkOwO extends LinearOpMode {
         fR = new MotorEx(hardwareMap, "fR", Motor.GoBILDA.RPM_435);
         bL = new MotorEx(hardwareMap, "bL", Motor.GoBILDA.RPM_435);
         bR = new MotorEx(hardwareMap, "bR", Motor.GoBILDA.RPM_435);
+
+        imu = new RevIMU(hardwareMap);
 
         bL.setInverted(true);
         TICKS_PER_REV = fL.getCPR();
@@ -49,7 +52,6 @@ public class AutonPlsWorkOwO extends LinearOpMode {
 
         leftEncoder.reset();
         rightEncoder.reset();
-        //TODO: Tune when robot can drive
         xCont = new PIDController(0.06, 0.4, 0.0001);
         yCont = new PIDController(0.06, 0.3, 0.0001);
         hCont = new PIDController(0.06, 0.3, 0);

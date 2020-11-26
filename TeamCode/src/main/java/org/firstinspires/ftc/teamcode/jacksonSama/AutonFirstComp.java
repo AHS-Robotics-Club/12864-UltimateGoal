@@ -1,17 +1,15 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.jacksonSama;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Drive;
 
-import java.util.concurrent.TimeUnit;
-
+@Disabled
 @Autonomous(name="Kanye East")
 public class AutonFirstComp extends CommandOpMode {
     private Motor fL, bL, fR, bR;
@@ -19,7 +17,6 @@ public class AutonFirstComp extends CommandOpMode {
     private DriveSystem mecDrive;
     private ElapsedTime time;
     public GamepadEx m_driverOp, m_toolOp;
-
     @Override
     public void initialize() {
         fL = new Motor(hardwareMap, "fL");
@@ -27,6 +24,7 @@ public class AutonFirstComp extends CommandOpMode {
         bL = new Motor(hardwareMap, "bL");
         bR = new Motor(hardwareMap, "bR");
         //one of our motors is messed up so it has to be inverted woooooo
+
         bL.setInverted(true);
         time = new ElapsedTime();
         mecDrive = new DriveSystem(fL, fR, bL, bR);
