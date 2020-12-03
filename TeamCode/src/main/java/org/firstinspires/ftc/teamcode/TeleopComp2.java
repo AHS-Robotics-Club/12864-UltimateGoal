@@ -14,6 +14,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.BetterToggle;
+import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.GamepadButtonB;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSystem;
@@ -52,6 +54,7 @@ public class TeleopComp2 extends CommandOpMode {
 
     private GamepadEx m_driverOp, m_toolOp;
     private Button toggleShooter, dpadUp, dpadDown, intakeOn, outtakeOn, wobbleButton, wobbleTwo;
+    private BetterToggle wobbleToggle;
     private RevIMU imu;
     private ElapsedTime elapsedTime;
 
@@ -117,10 +120,8 @@ public class TeleopComp2 extends CommandOpMode {
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         pickUpCommand = new Com_PickUp(wobbleSystem, elapsedTime);
         putDownCommand = new Com_PutDown(wobbleSystem, elapsedTime);
-        wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.B)
-                .whenPressed(pickUpCommand);
-        wobbleTwo = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
-                .whenPressed(putDownCommand);
+        wobbleToggle = new GamepadButtonB(m_driverOp, GamepadKeys.Button.Y)
+                .multiToggle(true, pickUpCommand, putDownCommand);
 
         mecDrive.setDefaultCommand(driveCommand);
 

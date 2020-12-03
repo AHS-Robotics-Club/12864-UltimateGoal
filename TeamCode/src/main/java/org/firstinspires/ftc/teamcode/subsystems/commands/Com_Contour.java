@@ -5,10 +5,10 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 
-public class Com_Vision extends CommandBase {
-    private final VisionSystem visionSystem;
+public class Com_Contour extends CommandBase {
+    private final ContourVisionSystem visionSystem;
 
-    public Com_Vision(VisionSystem subby){
+    public Com_Contour(ContourVisionSystem subby){
         visionSystem = subby;
         addRequirements(subby);
     }

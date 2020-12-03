@@ -21,9 +21,6 @@ public class Com_PickUp extends CommandBase {
         wobblySystem.spinMeRightRoundBaby();
     }
     @Override
-    public void execute(){
-    }
-    @Override
     public void end(boolean interrupted){
         wobblySystem.motorUp();
     }
@@ -31,4 +28,5 @@ public class Com_PickUp extends CommandBase {
     public boolean isFinished(){
        return time.seconds() >= 1;
     }
+
 }
