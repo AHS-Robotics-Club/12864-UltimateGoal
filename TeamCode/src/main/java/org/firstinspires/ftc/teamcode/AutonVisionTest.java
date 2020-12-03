@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
+import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Contour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PutDown;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Vision;
 import org.openftc.easyopencv.OpenCvInternalCamera;
@@ -31,7 +32,7 @@ public class AutonVisionTest extends CommandOpMode {
         private DriveSystem mecDrive;
 
         private ContourVisionSystem visionSystem;
-        private Com_Vision visionCommand;
+        private Com_Contour visionCommand;
 
         private WobbleSystem wobbleSystem;
         private Com_PutDown putDown;
@@ -71,7 +72,7 @@ public class AutonVisionTest extends CommandOpMode {
             wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
             putDown = new Com_PutDown(wobbleSystem, time);
             visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
-            visionCommand = new Com_Vision(visionSystem);
+            visionCommand = new Com_Contour(visionSystem);
 
             register(mecDrive, new SubsystemBase(){
                 @Override

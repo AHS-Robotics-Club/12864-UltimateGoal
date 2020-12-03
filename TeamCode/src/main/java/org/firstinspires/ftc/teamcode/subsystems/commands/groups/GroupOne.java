@@ -18,6 +18,5 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_PutDown(wobbleSystem, time),
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*0.55, 0D, time, 2)
                 );
-
     }
 }
