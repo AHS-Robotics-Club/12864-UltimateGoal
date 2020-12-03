@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.vision.UGRectDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,11 +12,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
 import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
-import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Contour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PutDown;
-import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Vision;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 
