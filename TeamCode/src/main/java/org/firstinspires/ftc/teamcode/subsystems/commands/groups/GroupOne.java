@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands.groups;
 
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,8 +19,9 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_DriveTime(drive, (13/voltageSensor.getVoltage()) * -0.55, 0D, 0D, time, 4.0),
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage()) * -0.55, 0D, time, 3.8),
                 new Com_PutDown(wobbleSystem, time),
-                new Com_Rotate(drive, imu, 180)
-//                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*0.55, 0D, time, 2)
+                new Com_Rotate(drive, imu, 180),
+                new WaitCommand(500),
+                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*0.55, 0D, time, 2)
                 );
     }
 }

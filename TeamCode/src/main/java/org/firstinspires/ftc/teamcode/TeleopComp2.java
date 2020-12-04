@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
@@ -35,7 +37,7 @@ public class TeleopComp2 extends CommandOpMode {
 
     private Motor fL, bL, fR, bR;
     private Motor shot, intake, wobble;
-    private SimpleServo servo;
+    private CRServo servo;
 
     private DriveSystem mecDrive;
     private Com_Drive driveCommand;
@@ -54,9 +56,12 @@ public class TeleopComp2 extends CommandOpMode {
 
     private GamepadEx m_driverOp, m_toolOp;
     private Button toggleShooter, dpadUp, dpadDown, intakeOn, outtakeOn, wobbleButton, wobbleTwo;
+    private Trigger leftTrigger, rightTrigger;
+    private TriggerReader leftTriggerReader, rightTriggerReader;
     private BetterToggle wobbleToggle;
     private RevIMU imu;
     private ElapsedTime elapsedTime;
+    private FunctionalCommand openCommand, closeCommand;
 
     @Override
     public void initialize() {
@@ -75,7 +80,7 @@ public class TeleopComp2 extends CommandOpMode {
         wobble.setRunMode(Motor.RunMode.PositionControl);
         wobble.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        servo = new SimpleServo(hardwareMap, "servo");
+        servo = new CRServo(hardwareMap, "servo");
 //        shot.setRunMode(Motor.RunMode.VelocityControl);
 
         mecDrive = new DriveSystem(fL, fR, bL, bR);
@@ -124,6 +129,26 @@ public class TeleopComp2 extends CommandOpMode {
                 .whenPressed(pickUpCommand);
         wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
                 .whenPressed(putDownCommand);
+
+        leftTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.LEFT_TRIGGER);
+        rightTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.RIGHT_TRIGGER);
+         openCommand = new FunctionalCommand(
+                 () -> { return; }, wobbleSystem::putMeDownUwU,
+                bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem);
+
+         closeCommand = new FunctionalCommand(
+                 () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
+                bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem);
+
+         leftTrigger = new Trigger(() -> {
+            leftTriggerReader.readValue();
+            return leftTriggerReader.isDown();
+        }).whileActiveContinuous(openCommand);
+
+         rightTrigger = new Trigger(() -> {
+            rightTriggerReader.readValue();
+            return rightTriggerReader.isDown();
+        }).whileActiveContinuous(closeCommand);
 
         mecDrive.setDefaultCommand(driveCommand);
 

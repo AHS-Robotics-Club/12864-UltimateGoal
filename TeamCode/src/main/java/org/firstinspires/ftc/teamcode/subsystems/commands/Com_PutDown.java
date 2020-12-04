@@ -20,17 +20,11 @@ public class Com_PutDown extends CommandBase {
     public void initialize(){
         time.reset();
         wobblySystem.motorDown();
-    }
-    @Override
-    public void execute(){
-    }
-    @Override
-    public void end(boolean interrupted){
-        wobblySystem.putMeDownUwU();
+
     }
     @Override
     public boolean isFinished(){
-        return time.seconds() >= 1;
+        return time.seconds() >= 2;
     }
 }
 

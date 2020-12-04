@@ -15,18 +15,16 @@ public class Com_PickUp extends CommandBase {
         time = elapsedTime;
         addRequirements(subby);
     }
+
     @Override
     public void initialize(){
         time.reset();
-        wobblySystem.spinMeRightRoundBaby();
-    }
-    @Override
-    public void end(boolean interrupted){
         wobblySystem.motorUp();
     }
+
     @Override
     public boolean isFinished(){
-       return time.seconds() >= 1;
+       return time.seconds() >= 2;
     }
 
 }

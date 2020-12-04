@@ -34,7 +34,7 @@ import static com.arcrobotics.ftclib.hardware.motors.Motor.ZeroPowerBehavior.BRA
 public class AutonomousKanye extends CommandOpMode {
     private Motor fL, bL, fR, bR;
     private Motor wobble, test;
-    private SimpleServo servo;
+    private CRServo servo;
     private UGRectDetector ugRectDetector;
     private DriveSystem mecDrive;
 
@@ -62,7 +62,7 @@ public class AutonomousKanye extends CommandOpMode {
         bR.setZeroPowerBehavior(BRAKE);
 
         wobble = new Motor(hardwareMap, "wobble");
-        servo = new SimpleServo(hardwareMap, "servo");
+        servo = new CRServo(hardwareMap, "servo");
         wobble.setZeroPowerBehavior(BRAKE);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         //named shot purely because im too lazy to change config

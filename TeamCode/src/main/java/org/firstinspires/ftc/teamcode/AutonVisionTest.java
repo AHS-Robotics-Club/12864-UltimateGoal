@@ -4,12 +4,14 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
+import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingPipeline;
 import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
@@ -24,8 +26,9 @@ import static com.arcrobotics.ftclib.hardware.motors.Motor.ZeroPowerBehavior.BRA
 public class AutonVisionTest extends CommandOpMode {
         private Motor fL, bL, fR, bR;
         private Motor wobble, test;
-        private SimpleServo servo;
+        private CRServo servo;
         private UGContourRingDetector ugContourRingDetector;
+        private UGContourRingPipeline ugContourRingPipeline;
         private DriveSystem mecDrive;
 
         private ContourVisionSystem visionSystem;
@@ -52,12 +55,13 @@ public class AutonVisionTest extends CommandOpMode {
             bR.setZeroPowerBehavior(BRAKE);
 
             wobble = new Motor(hardwareMap, "wobble");
-            servo = new SimpleServo(hardwareMap, "servo");
+            servo = new CRServo(hardwareMap, "servo");
             wobble.setZeroPowerBehavior(BRAKE);
             voltageSensor = hardwareMap.voltageSensor.iterator().next();
             //named shot purely because im too lazy to change config
             test = new Motor(hardwareMap, "shot");
             ugContourRingDetector = new UGContourRingDetector(hardwareMap, OpenCvInternalCamera.CameraDirection.BACK, telemetry, true);
+            UGContourRingDetector.PipelineConfiguration.setIS_PORTRAIT_MODE(false);
             ugContourRingDetector.init();
 
             imu = new RevIMU(hardwareMap);

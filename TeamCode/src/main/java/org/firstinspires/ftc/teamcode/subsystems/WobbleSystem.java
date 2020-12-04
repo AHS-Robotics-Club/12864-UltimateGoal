@@ -18,11 +18,11 @@ import java.util.function.BooleanSupplier;
 
 
 public class WobbleSystem extends SubsystemBase {
-    SimpleServo crServo;
+    CRServo crServo;
     Motor motor;
     Telemetry tele;
     boolean stopRequested;
-    public WobbleSystem(SimpleServo pickMeUpDaddy, Motor mator, Telemetry telemetry, BooleanSupplier isStopRequested){
+    public WobbleSystem(CRServo pickMeUpDaddy, Motor mator, Telemetry telemetry, BooleanSupplier isStopRequested){
         crServo = pickMeUpDaddy;
         motor = mator;
         tele = telemetry;
@@ -31,36 +31,43 @@ public class WobbleSystem extends SubsystemBase {
 
 
     public void spinMeRightRoundBaby(){
-        crServo.turnToAngle(18);
+//        crServo.turnToAngle(18);
+        crServo.set(1.0);
     }
     public void putMeDownUwU(){
-        crServo.turnToAngle(90);
+//        crServo.turnToAngle(90);
+        crServo.set(-0.2);
     }
     public void motorUp(){
         motor.resetEncoder();
         motor.setPositionCoefficient(0.008);
         motor.setPositionTolerance(10);
         motor.setTargetPosition(372);
-        while(!motor.atTargetPosition())
-            if(stopRequested)
+        while(!motor.atTargetPosition()) {
+            if (stopRequested)
                 break;
-            motor.set(0.8);
+            motor.set(0.45);
+        }
         motorStop();
     }
     public void motorDown(){
         motor.resetEncoder();
         motor.setPositionCoefficient(-0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(-360);
-        while(!motor.atTargetPosition())
-            if(stopRequested)
+        motor.setTargetPosition(-340);
+        while(!motor.atTargetPosition()) {
+            if (stopRequested)
                 break;
-            motor.set(-0.3);
+            motor.set(-0.15);
+        }
         motorStop();
     }
     public void motorStop(){
         motor.resetEncoder();
         motor.stopMotor();
+    }
+    public void servoStop(){
+        crServo.stop();
     }
     @Override
     public void periodic(){
