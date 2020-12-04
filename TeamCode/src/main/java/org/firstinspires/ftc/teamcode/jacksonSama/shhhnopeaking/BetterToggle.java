@@ -11,7 +11,7 @@ public class BetterToggle extends Button {
         CommandScheduler.getInstance().addButton(new Runnable() {
             private int i = 0;
             private boolean m_pressedLast = get();
-
+            //hehehehehe toggle between 100 commands
             @Override
             public void run() {
                 boolean pressed = get();
@@ -31,21 +31,21 @@ public class BetterToggle extends Button {
         return this;
     }
 
-    public BetterToggle toggleWhenPressed(final Command command1, final Command command2, boolean interruptible) {
+    public BetterToggle toggleWhenPressed(final Command commandOne, final Command commandTwo, boolean interruptible) {
         CommandScheduler.getInstance().addButton(new Runnable() {
             private boolean m_pressedLast = get();
             @Override
             public void run() {
                 boolean pressed = get();
                 if (!m_pressedLast && pressed) {
-                    if (command1.isScheduled()) {
-                        command1.cancel();
-                        command2.schedule(interruptible);
-                    } else if(command2.isScheduled()){
-                        command2.cancel();
-                        command1.schedule();
+                    if (commandOne.isScheduled()) {
+                        commandOne.cancel();
+                        commandTwo.schedule(interruptible);
+                    } else if(commandTwo.isScheduled()){
+                        commandTwo.cancel();
+                        commandOne.schedule(interruptible);
                     } else {
-                        command1.schedule(interruptible);
+                        commandOne.schedule(interruptible);
                     }
                 }
 
@@ -55,13 +55,13 @@ public class BetterToggle extends Button {
         return this;
     }
 
-    public BetterToggle toggleWhenPressed(final Command command1, final Command command2) {
-        toggleWhenPressed(command1, command2, true);
+    public BetterToggle toggleWhenPressed(final Command commandOne, final Command commandTwo) {
+        toggleWhenPressed(commandOne, commandTwo, true);
         return this;
     }
 
-    public BetterToggle toggleWhenPressed(final Runnable runnable1, final Runnable runnable2) {
-        toggleWhenPressed(new InstantCommand(runnable1), new InstantCommand(runnable2));
+    public BetterToggle toggleWhenPressed(final Runnable runnableOne, final Runnable runnableTwo) {
+        toggleWhenPressed(new InstantCommand(runnableOne), new InstantCommand(runnableTwo));
         return this;
     }
 
