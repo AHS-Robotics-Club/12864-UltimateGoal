@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands.drive;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
@@ -20,9 +22,8 @@ public class Com_DriveTime extends CommandBase {
         turn = turnSpeed;
         timey = time;
         timeLength = amnt;
-
-        addRequirements(subsystem);
     }
+
     @Override
     public void initialize(){
         timey.reset();
@@ -34,6 +35,7 @@ public class Com_DriveTime extends CommandBase {
     @Override
     public void end(boolean interrupted){
         driveSystem.halt();
+
     }
 
     @Override

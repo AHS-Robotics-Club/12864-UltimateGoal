@@ -117,11 +117,13 @@ public class TeleopComp2 extends CommandOpMode {
        outtakeOn = new GamepadButton(m_driverOp, GamepadKeys.Button.LEFT_BUMPER)
                .whenHeld(outtakeStartCommand);
 
-        wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
+        wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
         pickUpCommand = new Com_PickUp(wobbleSystem, elapsedTime);
         putDownCommand = new Com_PutDown(wobbleSystem, elapsedTime);
-        wobbleToggle = new GamepadButtonB(m_driverOp, GamepadKeys.Button.Y)
-                .multiToggle(true, pickUpCommand, putDownCommand);
+        wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.X)
+                .whenPressed(pickUpCommand);
+        wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
+                .whenPressed(putDownCommand);
 
         mecDrive.setDefaultCommand(driveCommand);
 

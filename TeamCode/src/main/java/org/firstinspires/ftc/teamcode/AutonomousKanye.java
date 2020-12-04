@@ -96,7 +96,7 @@ public class AutonomousKanye extends CommandOpMode {
                 visionCommand,
                 new SelectCommand(new HashMap<Object, Command>() {{
                     put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero(mecDrive, time, voltageSensor, imu, wobbleSystem)));
-                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem)));
+                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
                     put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
                 }},visionSystem::getStackSize)
         );
