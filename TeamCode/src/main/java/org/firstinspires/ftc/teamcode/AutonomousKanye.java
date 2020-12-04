@@ -78,7 +78,7 @@ public class AutonomousKanye extends CommandOpMode {
 
         time = new ElapsedTime();
         mecDrive = new DriveSystem(fL, fR, bL, bR);
-        wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
+        wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
         putDown = new Com_PutDown(wobbleSystem, time);
         visionSystem = new VisionSystem(ugRectDetector, telemetry);
         visionCommand = new Com_Vision(visionSystem);

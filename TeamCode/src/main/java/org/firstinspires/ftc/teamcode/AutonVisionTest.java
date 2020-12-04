@@ -66,7 +66,7 @@ public class AutonVisionTest extends CommandOpMode {
 
             time = new ElapsedTime();
             mecDrive = new DriveSystem(fL, fR, bL, bR);
-            wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
+            wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
             putDown = new Com_PutDown(wobbleSystem, time);
             visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
             visionCommand = new Com_Contour(visionSystem);
