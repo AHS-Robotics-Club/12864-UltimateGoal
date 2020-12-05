@@ -8,17 +8,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 
 public class Com_PutDown extends CommandBase {
-
     private final WobbleSystem wobblySystem;
-
-    private  Motor motor;
+    private Motor motor;
 
     public Com_PutDown(WobbleSystem subby){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
         motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(-330);
+        motor.setTargetPosition(-400);
 
         addRequirements(subby);
     }
@@ -29,7 +27,7 @@ public class Com_PutDown extends CommandBase {
     }
     @Override
     public void execute(){
-        motor.set(0.35);
+        motor.set(0.15);
     }
     @Override
     public void end(boolean interruptable){

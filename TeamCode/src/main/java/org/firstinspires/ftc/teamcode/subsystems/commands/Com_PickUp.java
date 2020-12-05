@@ -16,11 +16,10 @@ public class Com_PickUp extends CommandBase {
         motor = wobblySystem.getMotor();
         motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(350);
+        motor.setTargetPosition(-15);
 
         addRequirements(subby);
     }
-
     @Override
     public void initialize(){
         motor.stopMotor();
@@ -28,7 +27,7 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public void execute(){
-        motor.set(-0.45);
+        motor.set(-0.05);
     }
     @Override
     public void end(boolean interruptable){
