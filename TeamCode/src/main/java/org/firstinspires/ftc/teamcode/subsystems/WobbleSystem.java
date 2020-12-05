@@ -43,9 +43,7 @@ public class WobbleSystem extends SubsystemBase {
     public void armDown(){
         motor.set(0.25);
     }
-    public Telemetry getTele(){
-        return tele;
-    }
+
     @Override
     public void periodic(){
         tele.addData("Motor Position", motor.getCurrentPosition());
