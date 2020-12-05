@@ -19,9 +19,7 @@ public class Com_PutDown extends CommandBase {
     public Com_PutDown(WobbleSystem subby, ElapsedTime timey){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
-        motor.setPositionCoefficient(0.01);
-        motor.setPositionTolerance(10);
-        motor.setTargetPosition(-330);
+
         telemetry = wobblySystem.getTele();
 
         timer = timey;
@@ -31,6 +29,9 @@ public class Com_PutDown extends CommandBase {
     @Override
     public void initialize(){
         timer.reset();
+        motor.setPositionCoefficient(0.01);
+        motor.setPositionTolerance(10);
+        motor.setTargetPosition(-330);
         motor.stopMotor();
         telemetry.addData("awdwad", "awdaw");
         telemetry.update();
