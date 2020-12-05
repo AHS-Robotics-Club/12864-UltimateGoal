@@ -46,7 +46,7 @@ public class Com_PutDown extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition();
+        return motor.atTargetPosition() || timer.seconds() > 0.4;
     }
 }
 
