@@ -26,6 +26,6 @@ public class GroupZero extends SequentialCommandGroup {
                 new Com_PutDown(wobbleSystem),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
-                        bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem));
+                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem));
     }
 }
