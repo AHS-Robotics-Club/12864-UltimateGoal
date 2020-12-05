@@ -85,7 +85,7 @@ public class AutonomousKanye extends CommandOpMode {
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         putDown = new Com_PutDown(wobbleSystem);
         visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
-        visionCommand = new Com_Contour(visionSystem, elapsedTime);
+        visionCommand = new Com_Contour(visionSystem, time);
 
                 register(mecDrive, new SubsystemBase(){
             @Override

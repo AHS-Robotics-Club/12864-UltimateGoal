@@ -19,12 +19,12 @@ public class Com_Contour extends CommandBase {
     @Override
     public void initialize(){
         timer.reset();
-        while(timer.seconds() >= 1 && timer.seconds() <= 2)
+        while(timer.seconds() >= 1)
             visionSystem.getStackSize();
     }
 
     @Override
     public boolean isFinished(){
-        return true;
+        return timer.seconds() >= 1.5;
     }
 }
