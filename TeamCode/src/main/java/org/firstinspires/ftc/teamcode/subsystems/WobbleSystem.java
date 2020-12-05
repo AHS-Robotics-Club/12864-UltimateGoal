@@ -29,7 +29,6 @@ public class WobbleSystem extends SubsystemBase {
         crServo.set(-0.2);
     }
     public void motorStop(){
-        motor.resetEncoder();
         motor.stopMotor();
     }
     public void servoStop(){
@@ -37,6 +36,15 @@ public class WobbleSystem extends SubsystemBase {
     }
     public Motor getMotor(){
         return motor;
+    }
+    public void armUp(){
+        motor.set(-0.45);
+    }
+    public void armDown(){
+        motor.set(0.35);
+    }
+    public Telemetry getTele(){
+        return tele;
     }
     @Override
     public void periodic(){
