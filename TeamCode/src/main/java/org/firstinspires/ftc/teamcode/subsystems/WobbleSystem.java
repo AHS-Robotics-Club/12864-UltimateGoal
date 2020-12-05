@@ -38,10 +38,10 @@ public class WobbleSystem extends SubsystemBase {
         return motor;
     }
     public void armUp(){
-        motor.set(-0.45);
+        motor.set(0.45);
     }
     public void armDown(){
-        motor.set(0.35);
+        motor.set(0.25);
     }
     public Telemetry getTele(){
         return tele;

@@ -16,7 +16,7 @@ public class Com_PickUp extends CommandBase {
         motor = wobblySystem.getMotor();
         motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(350);
+        motor.setTargetPosition(330);
 
         timer = time;
 
