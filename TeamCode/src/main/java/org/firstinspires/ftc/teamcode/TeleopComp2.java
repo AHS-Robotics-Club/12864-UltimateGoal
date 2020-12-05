@@ -123,8 +123,8 @@ public class TeleopComp2 extends CommandOpMode {
                .whenHeld(outtakeStartCommand);
 
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
-        pickUpCommand = new Com_PickUp(wobbleSystem, elapsedTime);
-        putDownCommand = new Com_PutDown(wobbleSystem, elapsedTime);
+        pickUpCommand = new Com_PickUp(wobbleSystem);
+        putDownCommand = new Com_PutDown(wobbleSystem);
         wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.X)
                 .whenPressed(pickUpCommand);
         wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
