@@ -25,8 +25,8 @@ public class Com_PickUp extends CommandBase {
 
     @Override
     public void initialize(){
-        motor.stopMotor();
         timer.reset();
+        motor.stopMotor();
     }
     @Override
     public void execute(){
@@ -34,6 +34,7 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public void end(boolean interruptable){
+        timer.reset();
         wobblySystem.motorStop();
     }
     @Override
