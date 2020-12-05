@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 public class Com_PickUp extends CommandBase {
     private final WobbleSystem wobblySystem;
     private Motor motor;
-
-    public Com_PickUp(WobbleSystem subby){
+    private ElapsedTime timer;
+    public Com_PickUp(WobbleSystem subby, ElapsedTime time){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
         motor.setPositionCoefficient(0.01);
@@ -24,18 +24,17 @@ public class Com_PickUp extends CommandBase {
     @Override
     public void initialize(){
         motor.stopMotor();
-        motor.resetEncoder();
     }
     @Override
     public void execute(){
-        motor.set(-0.45);
+        wobblySystem.armUp();
     }
     @Override
     public void end(boolean interruptable){
-        motor.stopMotor();
+        wobblySystem.motorStop();
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition();
+        return motor.atTargetPosition() || timer.seconds() > 2;
     }
 }

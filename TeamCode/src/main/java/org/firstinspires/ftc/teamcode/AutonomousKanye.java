@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.ScheduleCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
@@ -67,6 +68,7 @@ public class AutonomousKanye extends CommandOpMode {
 
         wobble = new Motor(hardwareMap, "wobble");
         servo = new CRServo(hardwareMap, "servo");
+        wobble.setRunMode(Motor.RunMode.PositionControl);
         wobble.setZeroPowerBehavior(BRAKE);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         //named shot purely because im too lazy to change config
@@ -94,7 +96,8 @@ public class AutonomousKanye extends CommandOpMode {
         });
 
         SequentialCommandGroup wobbleGoal = new SequentialCommandGroup(
-                new Com_DriveTime(mecDrive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 0.20),
+                new Com_DriveTime(mecDrive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 0.25),
+                new WaitCommand(1000),
                 visionCommand,
             new SelectCommand(new HashMap<Object, Command>() {{
                     put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero(mecDrive, time, voltageSensor, imu, wobbleSystem)));

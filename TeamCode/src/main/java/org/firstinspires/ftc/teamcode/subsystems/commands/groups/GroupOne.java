@@ -18,9 +18,9 @@ public class GroupOne extends SequentialCommandGroup {
         addCommands(
                 new Com_DriveTime(drive,0.5, 0D, 0D, time, 2.0),
                 new Com_RotateTo(drive, imu, 0),
-                new Com_DriveTime(drive, (13/voltageSensor.getVoltage())*-0.55, 0D, 0D, time, 3.9),
+                new Com_DriveTime(drive, (13/voltageSensor.getVoltage())*-0.55, 0D, 0D, time, 3.5),
                 new Com_RotateTo(drive, imu, 0),
-                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 4.3),
+                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 4.2),
                 new Com_PutDown(wobbleSystem),
                 new Com_Rotate(drive, imu, 180),
                 new WaitCommand(500),
