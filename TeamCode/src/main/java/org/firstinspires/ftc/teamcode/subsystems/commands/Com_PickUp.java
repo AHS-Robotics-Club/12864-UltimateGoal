@@ -14,9 +14,6 @@ public class Com_PickUp extends CommandBase {
     public Com_PickUp(WobbleSystem subby, ElapsedTime time){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
-        motor.setPositionCoefficient(0.01);
-        motor.setPositionTolerance(10);
-        motor.setTargetPosition(330);
 
         timer = time;
 
@@ -26,6 +23,9 @@ public class Com_PickUp extends CommandBase {
     @Override
     public void initialize(){
         timer.reset();
+        motor.setPositionCoefficient(0.01);
+        motor.setPositionTolerance(10);
+        motor.setTargetPosition(330);
         motor.stopMotor();
     }
     @Override
