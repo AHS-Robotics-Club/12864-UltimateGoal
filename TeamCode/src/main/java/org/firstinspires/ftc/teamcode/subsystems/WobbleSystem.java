@@ -13,15 +13,13 @@ public class WobbleSystem extends SubsystemBase {
     CRServo crServo;
     Motor motor;
     Telemetry tele;
-    BooleanSupplier stopRequested;
-    public WobbleSystem(CRServo pickMeUpDaddy, Motor mator, Telemetry telemetry, BooleanSupplier isStopRequested){
+    public WobbleSystem(CRServo pickMeUpDaddy, Motor mator, Telemetry telemetry){
         crServo = pickMeUpDaddy;
         motor = mator;
         tele = telemetry;
-        stopRequested = isStopRequested;
+
+        motor.resetEncoder();
     }
-
-
     public void spinMeRightRoundBaby(){
 //        crServo.turnToAngle(18);
         crServo.set(1.0);

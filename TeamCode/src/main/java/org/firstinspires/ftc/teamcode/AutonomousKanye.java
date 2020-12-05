@@ -79,7 +79,7 @@ public class AutonomousKanye extends CommandOpMode {
 
         time = new ElapsedTime();
         mecDrive = new DriveSystem(fL, fR, bL, bR);
-        wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
+        wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         putDown = new Com_PutDown(wobbleSystem);
         visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
         visionCommand = new Com_Contour(visionSystem);
@@ -94,9 +94,9 @@ public class AutonomousKanye extends CommandOpMode {
         });
 
         SequentialCommandGroup wobbleGoal = new SequentialCommandGroup(
-                new Com_DriveTime(mecDrive, (13/voltageSensor.getVoltage())*-0.55, 0D, 0D, time, 0.15),
+                new Com_DriveTime(mecDrive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 0.20),
                 visionCommand,
-                new SelectCommand(new HashMap<Object, Command>() {{
+            new SelectCommand(new HashMap<Object, Command>() {{
                     put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero(mecDrive, time, voltageSensor, imu, wobbleSystem)));
                     put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
                     put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
