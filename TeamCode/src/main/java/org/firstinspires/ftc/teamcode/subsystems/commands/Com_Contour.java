@@ -1,21 +1,26 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 
 public class Com_Contour extends CommandBase {
     private final ContourVisionSystem visionSystem;
-
-    public Com_Contour(ContourVisionSystem subby){
+    private ElapsedTime timer;
+    public Com_Contour(ContourVisionSystem subby, ElapsedTime timee){
         visionSystem = subby;
+
+        timer = timee;
         addRequirements(subby);
     }
 
     @Override
     public void initialize(){
-        visionSystem.getStackSize();
+        timer.reset();
+        while(timer.seconds() >= 1 && timer.seconds() <= 2)
+            visionSystem.getStackSize();
     }
 
     @Override
