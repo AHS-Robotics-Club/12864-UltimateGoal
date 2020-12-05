@@ -26,9 +26,9 @@ public class GroupOne extends SequentialCommandGroup {
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
                         bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
-                new WaitCommand(500),
+                new WaitCommand(700),
                 new Com_Rotate(drive, imu, 180),
-                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*0.55, 0D, time, 1)
+                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 1)
                 );
     }
 }
