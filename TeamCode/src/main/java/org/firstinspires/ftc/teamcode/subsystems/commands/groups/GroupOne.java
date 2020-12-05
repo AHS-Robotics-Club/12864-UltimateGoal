@@ -24,15 +24,15 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_RotateTo(drive, imu, 0),
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 4.2),
                 new Com_PutDown(wobbleSystem, time),
-                new WaitCommand(300),
+                new WaitCommand(1000),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
                         bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
-                new WaitCommand(300),
+                new WaitCommand(1000),
                 new Com_PickUp(wobbleSystem, time),
-                new WaitCommand(700),
+                new WaitCommand(1000),
                 new Com_Rotate(drive, imu, 180),
-                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 1)
+                new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 1.12)
                 );
     }
 }
