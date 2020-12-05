@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands.groups;
 
+import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.RevIMU;
@@ -22,8 +23,11 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_RotateTo(drive, imu, 0),
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 4.2),
                 new Com_PutDown(wobbleSystem),
-                new Com_Rotate(drive, imu, 180),
+                new FunctionalCommand(
+                        () -> { return; }, wobbleSystem::putMeDownUwU,
+                        bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem),
                 new WaitCommand(500),
+                new Com_Rotate(drive, imu, 180),
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*0.55, 0D, time, 1)
                 );
     }

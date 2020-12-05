@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.ScheduleCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -96,6 +97,9 @@ public class AutonomousKanye extends CommandOpMode {
         });
 
         SequentialCommandGroup wobbleGoal = new SequentialCommandGroup(
+                new FunctionalCommand(
+                        () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
+                        bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem),
                 new Com_DriveTime(mecDrive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 0.25),
                 new WaitCommand(1000),
                 visionCommand,
