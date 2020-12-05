@@ -38,6 +38,6 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 2;
+        return motor.atTargetPosition() || timer.seconds() > 0.4;
     }
 }
