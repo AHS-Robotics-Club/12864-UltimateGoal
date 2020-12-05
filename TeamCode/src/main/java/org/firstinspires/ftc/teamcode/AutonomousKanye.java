@@ -99,7 +99,7 @@ public class AutonomousKanye extends CommandOpMode {
         SequentialCommandGroup wobbleGoal = new SequentialCommandGroup(
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
-                        bool -> wobbleSystem.servoStop(), () -> false, wobbleSystem),
+                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
                 new Com_DriveTime(mecDrive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 0.25),
                 new WaitCommand(1000),
                 visionCommand,
