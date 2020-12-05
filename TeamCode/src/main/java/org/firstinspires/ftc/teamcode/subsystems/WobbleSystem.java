@@ -21,12 +21,12 @@ public class WobbleSystem extends SubsystemBase {
     CRServo crServo;
     Motor motor;
     Telemetry tele;
-    boolean stopRequested;
+    BooleanSupplier stopRequested;
     public WobbleSystem(CRServo pickMeUpDaddy, Motor mator, Telemetry telemetry, BooleanSupplier isStopRequested){
         crServo = pickMeUpDaddy;
         motor = mator;
         tele = telemetry;
-        stopRequested = isStopRequested.getAsBoolean();
+        stopRequested = isStopRequested;
     }
 
 
@@ -44,11 +44,13 @@ public class WobbleSystem extends SubsystemBase {
         motor.setPositionTolerance(10);
         motor.setTargetPosition(372);
         while(!motor.atTargetPosition()) {
-            if (stopRequested)
+            if (stopRequested.getAsBoolean()) {
+                motor.stopMotor();
                 break;
+            }
             motor.set(0.45);
         }
-        motorStop();
+        motor.stopMotor();
     }
     public void motorDown(){
         motor.resetEncoder();
@@ -56,11 +58,13 @@ public class WobbleSystem extends SubsystemBase {
         motor.setPositionTolerance(10);
         motor.setTargetPosition(-340);
         while(!motor.atTargetPosition()) {
-            if (stopRequested)
+            if (stopRequested.getAsBoolean()) {
+                motor.stopMotor();
                 break;
+            }
             motor.set(-0.15);
         }
-        motorStop();
+        motor.stopMotor();
     }
     public void motorStop(){
         motor.resetEncoder();

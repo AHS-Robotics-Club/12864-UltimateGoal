@@ -15,9 +15,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
+import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
+import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Contour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PutDown;
 import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_DriveTime;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Vision;
@@ -25,6 +28,7 @@ import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Rotate;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupFour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupOne;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupZero;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.HashMap;
 
@@ -35,11 +39,11 @@ public class AutonomousKanye extends CommandOpMode {
     private Motor fL, bL, fR, bR;
     private Motor wobble, test;
     private CRServo servo;
-    private UGRectDetector ugRectDetector;
+    private UGContourRingDetector ugContourRingDetector;
     private DriveSystem mecDrive;
 
-    private VisionSystem visionSystem;
-    private Com_Vision visionCommand;
+    private ContourVisionSystem visionSystem;
+    private Com_Contour visionCommand;
 
     private WobbleSystem wobbleSystem;
     private Com_PutDown putDown;
@@ -67,11 +71,8 @@ public class AutonomousKanye extends CommandOpMode {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         //named shot purely because im too lazy to change config
         test = new Motor(hardwareMap, "shot");
-        ugRectDetector = new UGRectDetector(hardwareMap);
-        ugRectDetector.init();
-        ugRectDetector.setTopRectangle(0.46, 0.45);
-        ugRectDetector.setBottomRectangle(0.46, 0.39);
-        ugRectDetector.setRectangleSize(10, 30);
+        ugContourRingDetector = new UGContourRingDetector(hardwareMap, OpenCvInternalCamera.CameraDirection.BACK, telemetry, true);
+        ugContourRingDetector.init();
         imu = new RevIMU(hardwareMap);
         imu.init();
 
@@ -80,8 +81,8 @@ public class AutonomousKanye extends CommandOpMode {
         mecDrive = new DriveSystem(fL, fR, bL, bR);
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry, this::isStopRequested);
         putDown = new Com_PutDown(wobbleSystem, time);
-        visionSystem = new VisionSystem(ugRectDetector, telemetry);
-        visionCommand = new Com_Vision(visionSystem);
+        visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
+        visionCommand = new Com_Contour(visionSystem);
 
                 register(mecDrive, new SubsystemBase(){
             @Override

@@ -120,16 +120,16 @@ class UGContourRingDetector( // primary constructor
                 ).apply {
                     UGContourRingPipeline.CAMERA_WIDTH = if (IS_PORTRAIT_MODE) CAMERA_HEIGHT else CAMERA_WIDTH
                     // NOTE @Purav, try line below if it still doesnt work
-                    // UGContourRingPipeline.CAMERA_WIDTH = if (IS_PORTRAIT_MODE) CAMERA_WIDTH else CAMERA_HEIGHT
+                    //UGContourRingPipeline.CAMERA_WIDTH = if (IS_PORTRAIT_MODE) CAMERA_WIDTH else CAMERA_HEIGHT
                     UGContourRingPipeline.HORIZON = HORIZON
                     ftcLibPipeline = this
                 }
         )
 
         camera.openCameraDeviceAsync {
-            camera.startStreaming(320,
-                    240,
-                    OpenCvCameraRotation.UPRIGHT,
+            camera.startStreaming(CAMERA_WIDTH,
+                    CAMERA_HEIGHT,
+                    OpenCvCameraRotation.SIDEWAYS_LEFT,
             )
         }
     }
