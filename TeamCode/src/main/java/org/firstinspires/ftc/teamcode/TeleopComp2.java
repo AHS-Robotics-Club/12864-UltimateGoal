@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ScheduleCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -126,9 +127,9 @@ public class TeleopComp2 extends CommandOpMode {
         pickUpCommand = new Com_PickUp(wobbleSystem, elapsedTime);
         putDownCommand = new Com_PutDown(wobbleSystem, elapsedTime);
         wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.X)
-                .whenPressed(pickUpCommand);
+                .whenPressed(new ScheduleCommand(pickUpCommand));
         wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
-                .whenPressed(putDownCommand);
+                .whenPressed(new ScheduleCommand(putDownCommand));
 
         leftTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.LEFT_TRIGGER);
         rightTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.RIGHT_TRIGGER);

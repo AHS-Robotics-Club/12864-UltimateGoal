@@ -41,6 +41,7 @@ public class Com_PutDown extends CommandBase {
     }
     @Override
     public void end(boolean interruptable){
+        timer.reset();
         wobblySystem.motorStop();
     }
     @Override
