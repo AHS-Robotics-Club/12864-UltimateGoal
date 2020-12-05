@@ -25,7 +25,7 @@ public class GroupFour extends SequentialCommandGroup {
                 new Com_DriveTime(drive, 0D, (13/voltageSensor.getVoltage())*-0.55, 0D, time, 4.8),
                 new Com_Rotate(drive, imu, 180),
                 new Com_DriveTime(drive, (13/voltageSensor.getVoltage())*-0.55, 0D, 0D, time, 1.3),
-                new Com_PutDown(wobbleSystem),
+                new Com_PutDown(wobbleSystem, time),
                 new WaitCommand(300),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
