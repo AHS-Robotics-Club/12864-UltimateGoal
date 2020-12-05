@@ -18,12 +18,15 @@ public class Com_PickUp extends CommandBase {
         motor.setPositionTolerance(10);
         motor.setTargetPosition(350);
 
+        timer = time;
+
         addRequirements(subby);
     }
 
     @Override
     public void initialize(){
         motor.stopMotor();
+        timer.reset();
     }
     @Override
     public void execute(){
