@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.ScheduleCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
@@ -15,9 +17,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
+import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
+import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Contour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PutDown;
 import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_DriveTime;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Vision;
@@ -25,6 +30,7 @@ import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Rotate;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupFour;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupOne;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupZero;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.HashMap;
 
@@ -34,12 +40,12 @@ import static com.arcrobotics.ftclib.hardware.motors.Motor.ZeroPowerBehavior.BRA
 public class AutonomousKanye extends CommandOpMode {
     private Motor fL, bL, fR, bR;
     private Motor wobble, test;
-    private SimpleServo servo;
-    private UGRectDetector ugRectDetector;
+    private CRServo servo;
+    private UGContourRingDetector ugContourRingDetector;
     private DriveSystem mecDrive;
 
-    private VisionSystem visionSystem;
-    private Com_Vision visionCommand;
+    private ContourVisionSystem visionSystem;
+    private Com_Contour visionCommand;
 
     private WobbleSystem wobbleSystem;
     private Com_PutDown putDown;
@@ -62,16 +68,14 @@ public class AutonomousKanye extends CommandOpMode {
         bR.setZeroPowerBehavior(BRAKE);
 
         wobble = new Motor(hardwareMap, "wobble");
-        servo = new SimpleServo(hardwareMap, "servo");
+        servo = new CRServo(hardwareMap, "servo");
+        wobble.setRunMode(Motor.RunMode.PositionControl);
         wobble.setZeroPowerBehavior(BRAKE);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         //named shot purely because im too lazy to change config
         test = new Motor(hardwareMap, "shot");
-        ugRectDetector = new UGRectDetector(hardwareMap);
-        ugRectDetector.init();
-        ugRectDetector.setTopRectangle(0.46, 0.45);
-        ugRectDetector.setBottomRectangle(0.46, 0.39);
-        ugRectDetector.setRectangleSize(10, 30);
+        ugContourRingDetector = new UGContourRingDetector(hardwareMap, OpenCvInternalCamera.CameraDirection.BACK, telemetry, true);
+        ugContourRingDetector.init();
         imu = new RevIMU(hardwareMap);
         imu.init();
 
@@ -80,8 +84,8 @@ public class AutonomousKanye extends CommandOpMode {
         mecDrive = new DriveSystem(fL, fR, bL, bR);
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         putDown = new Com_PutDown(wobbleSystem, time);
-        visionSystem = new VisionSystem(ugRectDetector, telemetry);
-        visionCommand = new Com_Vision(visionSystem);
+        visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
+        visionCommand = new Com_Contour(visionSystem, time);
 
                 register(mecDrive, new SubsystemBase(){
             @Override
@@ -93,10 +97,15 @@ public class AutonomousKanye extends CommandOpMode {
         });
 
         SequentialCommandGroup wobbleGoal = new SequentialCommandGroup(
+//                new FunctionalCommand(
+//                        () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
+//                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
+                new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.28),
+                new WaitCommand(2000),
                 visionCommand,
-                new SelectCommand(new HashMap<Object, Command>() {{
+            new SelectCommand(new HashMap<Object, Command>() {{
                     put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero(mecDrive, time, voltageSensor, imu, wobbleSystem)));
-                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem)));
+                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
                     put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
                 }},visionSystem::getStackSize)
         );

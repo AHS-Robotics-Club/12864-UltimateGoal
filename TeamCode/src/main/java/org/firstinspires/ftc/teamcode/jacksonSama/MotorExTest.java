@@ -14,16 +14,17 @@ public class MotorExTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        test = new MotorEx(hardwareMap, "shot", Motor.GoBILDA.BARE);
+        test = new MotorEx(hardwareMap, "shot");
         test.setRunMode(Motor.RunMode.VelocityControl);
         waitForStart();
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                test.setVelocity(312.0 / 60 * 537.6 * 0.9);
+                test.set(1);
             }
-            else test.setVelocity(0);
+            else test.stopMotor();
         }
-        test.setVelocity(0);
+        test.stopMotor();
     }
 
 }
+
