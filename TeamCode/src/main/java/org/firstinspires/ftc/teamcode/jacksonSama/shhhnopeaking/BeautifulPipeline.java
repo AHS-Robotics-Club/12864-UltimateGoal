@@ -6,14 +6,22 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+//Make your pipline more beautiful UwU
 public class BeautifulPipeline{
     private boolean rects;
     Mat matYCrCb = new Mat();
-
+    Mat rectangle;
     public BeautifulPipeline(boolean usesRect){
         rects = usesRect;
     }
-
+    /**
+     * Convert the input frame to the color space matYCrCb
+     * Then stores this converted color space in the mat matYCrCb
+     * @param input takes the input from the process frame
+     */
+    public void RGBtoYCrCb(Mat input){
+        Imgproc.cvtColor(input, matYCrCb, Imgproc.COLOR_RGB2YCrCb);
+    }
     /**
      * Draw the rectangle onto the desired mat
      * @param mat   The mat that the rectangle should be drawn on
@@ -22,13 +30,14 @@ public class BeautifulPipeline{
      * @param thickness The thickness of the rectangle
      */
     public void drawRectMatrix(Mat mat, Rect rect, Scalar color, int thickness){
+        rectangle = mat;
         Imgproc.rectangle(mat, rect, color, thickness);
     }
     public void drawRectMatrix(Mat mat, Rect rect, Scalar color){
         drawRectMatrix(mat, rect, color, 1);
     }
     public void drawRectMatrix(Rect rect, Scalar color){
-        Mat rectangle = new Mat();
+        rectangle = new Mat();
         drawRectMatrix(rectangle, rect, color, 1);
     }
 
@@ -40,10 +49,6 @@ public class BeautifulPipeline{
         return rectangle;
     }
     public void submat(Rect rect){
-        Mat block;
-        block = matYCrCb.submat(rect);
-        Core.extractChannel(block, block, 2);
-        //Dont judge I know this looks dumb I just put a second block in there so no errors
-        // WIP WIP WIP JACKSON GAYYYYY
+
     }
 }
