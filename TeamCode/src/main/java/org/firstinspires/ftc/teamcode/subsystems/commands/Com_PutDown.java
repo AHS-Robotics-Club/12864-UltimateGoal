@@ -18,11 +18,8 @@ public class Com_PutDown extends CommandBase {
     public Com_PutDown(WobbleSystem subby, ElapsedTime timey){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
-<<<<<<< HEAD
 
-        telemetry = wobblySystem.getTele();
-=======
->>>>>>> 2dcbef0ab9a1a02d14b5eac23c4faa00f4830145
+
 
         timer = timey;
 
@@ -48,6 +45,6 @@ public class Com_PutDown extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 0.4;
+        return motor.atTargetPosition() || timer.seconds() > 0.8;
     }
 }

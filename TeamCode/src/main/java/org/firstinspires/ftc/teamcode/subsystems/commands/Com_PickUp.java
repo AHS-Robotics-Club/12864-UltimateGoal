@@ -14,10 +14,8 @@ public class Com_PickUp extends CommandBase {
     public Com_PickUp(WobbleSystem subby, ElapsedTime time){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
-<<<<<<< HEAD
 
-=======
->>>>>>> 2dcbef0ab9a1a02d14b5eac23c4faa00f4830145
+        //so no head?
 
         timer = time;
 
@@ -29,11 +27,7 @@ public class Com_PickUp extends CommandBase {
         timer.reset();
         motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-<<<<<<< HEAD
-        motor.setTargetPosition(360);
-=======
-        motor.setTargetPosition(330);
->>>>>>> 2dcbef0ab9a1a02d14b5eac23c4faa00f4830145
+        motor.setTargetPosition(320);
         motor.stopMotor();
     }
     @Override
@@ -47,6 +41,6 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 0.4;
+        return motor.atTargetPosition() || timer.seconds() > 0.8;
     }
 }
