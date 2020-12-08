@@ -100,7 +100,7 @@ public class AutonomousKanye extends CommandOpMode {
 //                new FunctionalCommand(
 //                        () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
 //                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
-                new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.28),
+                new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.29),
                 new WaitCommand(2000),
                 visionCommand,
             new SelectCommand(new HashMap<Object, Command>() {{

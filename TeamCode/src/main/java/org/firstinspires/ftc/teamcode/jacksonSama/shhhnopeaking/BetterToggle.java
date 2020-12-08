@@ -34,19 +34,25 @@ public class BetterToggle extends Button {
     public BetterToggle toggleWhenPressed(final Command commandOne, final Command commandTwo, boolean interruptible) {
         CommandScheduler.getInstance().addButton(new Runnable() {
             private boolean m_pressedLast = get();
+            private boolean m_firstCommandActive = false;
+
             @Override
             public void run() {
                 boolean pressed = get();
                 if (!m_pressedLast && pressed) {
-                    if (commandOne.isScheduled()) {
-                        commandOne.cancel();
+                    if (m_firstCommandActive) {
+                        if (commandOne.isScheduled()) {
+                            commandOne.cancel();
+                        }
                         commandTwo.schedule(interruptible);
-                    } else if(commandTwo.isScheduled()){
-                        commandTwo.cancel();
-                        commandOne.schedule(interruptible);
                     } else {
+                        if (commandTwo.isScheduled()) {
+                            commandTwo.cancel();
+                        }
                         commandOne.schedule(interruptible);
                     }
+
+                    m_firstCommandActive = !m_firstCommandActive;
                 }
 
                 m_pressedLast = pressed;

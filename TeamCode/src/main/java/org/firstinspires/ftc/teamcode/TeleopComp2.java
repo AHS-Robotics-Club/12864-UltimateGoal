@@ -15,6 +15,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.BetterToggle;
@@ -59,7 +60,7 @@ public class TeleopComp2 extends CommandOpMode {
     private Button toggleShooter, dpadUp, dpadDown, intakeOn, outtakeOn, wobbleButton, wobbleTwo;
     private Trigger leftTrigger, rightTrigger;
     private TriggerReader leftTriggerReader, rightTriggerReader;
-    private BetterToggle wobbleToggle;
+    private BetterToggle toggleWobble, toggleTestTwo;
     private RevIMU imu;
     private ElapsedTime elapsedTime;
     private FunctionalCommand openCommand, closeCommand;
@@ -126,10 +127,8 @@ public class TeleopComp2 extends CommandOpMode {
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         pickUpCommand = new Com_PickUp(wobbleSystem, elapsedTime);
         putDownCommand = new Com_PutDown(wobbleSystem, elapsedTime);
-        wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.X)
-                .whenPressed(new ScheduleCommand(pickUpCommand));
-        wobbleButton = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
-                .whenPressed(new ScheduleCommand(putDownCommand));
+        toggleWobble = new GamepadButtonB(m_driverOp, GamepadKeys.Button.X)
+                .toggleWhenPressed(putDownCommand, pickUpCommand);
 
         leftTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.LEFT_TRIGGER);
         rightTriggerReader = new TriggerReader(m_driverOp, GamepadKeys.Trigger.RIGHT_TRIGGER);
@@ -150,11 +149,8 @@ public class TeleopComp2 extends CommandOpMode {
             rightTriggerReader.readValue();
             return rightTriggerReader.isDown();
         }).whileActiveContinuous(closeCommand);
-
-        mecDrive.setDefaultCommand(driveCommand);
-
         register(mecDrive);
 
-        schedule(driveCommand);
+        mecDrive.setDefaultCommand(driveCommand);
     }
 }

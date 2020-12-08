@@ -24,13 +24,13 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_RotateTo(drive, imu, 0),
                 new Com_DriveTime(drive, 0D, -0.55, 0D, time, 4.5),
                 new Com_PutDown(wobbleSystem, time),
-                new WaitCommand(2000),
+                new WaitCommand(3000),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
                         bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
                 new WaitCommand(2000),
                 new Com_PickUp(wobbleSystem, time),
-                new WaitCommand(1000),
+                new WaitCommand(3000),
                 new Com_Rotate(drive, imu, 180),
                 new Com_DriveTime(drive, 0D, -0.55, 0D, time, 1.12)
                 );
