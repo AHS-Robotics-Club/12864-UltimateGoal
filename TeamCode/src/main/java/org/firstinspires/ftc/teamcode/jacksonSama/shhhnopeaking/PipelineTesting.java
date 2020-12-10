@@ -12,6 +12,7 @@ public class PipelineTesting extends OpenCvPipeline {
         pipeline.RGBtoYCrCb(input);
         Rect rect1 = pipeline.createRect(0.25, 0.25, 25, 25);
         pipeline.drawRectMatrix(rect1, new Scalar(255, 0, 0));
+        pipeline.submatAndExtract(rect1);
         return input;
     }
 }

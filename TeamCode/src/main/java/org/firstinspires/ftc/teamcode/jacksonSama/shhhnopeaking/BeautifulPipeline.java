@@ -6,11 +6,14 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.ArrayList;
+
 //Make your pipline more beautiful UwU
 public class BeautifulPipeline{
     private boolean rects;
     Mat matYCrCb = new Mat();
-    Mat rectangle;
+    ArrayList<Mat> rectangle = new ArrayList<Mat>();
+    ArrayList<Mat> block = new ArrayList<Mat>();
     public BeautifulPipeline(boolean usesRect){
         rects = usesRect;
     }
@@ -30,15 +33,16 @@ public class BeautifulPipeline{
      * @param thickness The thickness of the rectangle
      */
     public void drawRectMatrix(Mat mat, Rect rect, Scalar color, int thickness){
-        rectangle = mat;
+        rectangle.add(mat);
         Imgproc.rectangle(mat, rect, color, thickness);
     }
     public void drawRectMatrix(Mat mat, Rect rect, Scalar color){
+        rectangle.add(mat);
         drawRectMatrix(mat, rect, color, 1);
     }
     public void drawRectMatrix(Rect rect, Scalar color){
-        rectangle = new Mat();
-        drawRectMatrix(rectangle, rect, color, 1);
+        rectangle.add(new Mat());
+        drawRectMatrix(rectangle.get(rectangle.size()-1), rect, color, 1);
     }
 
     public Rect createRect(double xPercentage, double yPercentage, int width, int height){
@@ -48,7 +52,8 @@ public class BeautifulPipeline{
                 width, height);
         return rectangle;
     }
-    public void submat(Rect rect){
-
+    public void submatAndExtract(Rect rect){
+        block.add(matYCrCb.submat(rect));
+        Core.extractChannel(block.get(block.size()-1), new Mat(), 2);
     }
 }
