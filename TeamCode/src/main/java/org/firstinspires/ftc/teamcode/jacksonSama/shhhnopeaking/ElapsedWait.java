@@ -21,7 +21,7 @@ public class ElapsedWait extends CommandBase {
     public void initialize() {
         timer.reset();
     }
-    
+
     @Override
     public boolean isFinished() {
         return timer.milliseconds() >= leTime;

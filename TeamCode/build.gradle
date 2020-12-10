@@ -11,8 +11,8 @@
 
 // Custom definitions may go here
 apply from: '../build.common.gradle'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 // Include common definitions from above.
 repositories {
     maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
