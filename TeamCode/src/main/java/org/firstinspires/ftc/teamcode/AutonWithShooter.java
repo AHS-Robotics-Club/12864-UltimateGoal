@@ -39,13 +39,14 @@ import java.util.HashMap;
 
 import static com.arcrobotics.ftclib.hardware.motors.Motor.ZeroPowerBehavior.BRAKE;
 
-@Autonomous(name="Kanye North")
-public class AutonomousKanye extends CommandOpMode {
+@Autonomous(name="Kanye Shoot")
+public class AutonWithShooter extends CommandOpMode {
     private Motor fL, bL, fR, bR;
     private Motor wobble, shot;
     private CRServo servo;
     private UGContourRingDetector ugContourRingDetector;
     private DriveSystem mecDrive;
+    public double pewr = 1.0;
 
 
     private ContourVisionSystem visionSystem;
@@ -53,6 +54,8 @@ public class AutonomousKanye extends CommandOpMode {
 
     private WobbleSystem wobbleSystem;
     private Com_PutDown putDown;
+
+    private ShooterSystem shooterSystem;
 
     private ElapsedTime time;
     private RevIMU imu;
@@ -89,10 +92,11 @@ public class AutonomousKanye extends CommandOpMode {
         mecDrive = new DriveSystem(fL, fR, bL, bR);
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
         putDown = new Com_PutDown(wobbleSystem, time);
+        shooterSystem = new ShooterSystem(shot, telemetry, ()->pewr);
         visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
         visionCommand = new Com_Contour(visionSystem, time);
 
-                register(mecDrive, new SubsystemBase(){
+        register(mecDrive, new SubsystemBase(){
             @Override
             public void periodic() {
                 telemetry.addData("imu heading", imu.getHeading());
@@ -107,9 +111,8 @@ public class AutonomousKanye extends CommandOpMode {
 //                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
                 new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.29),
                 visionCommand,
-            new SelectCommand(new HashMap<Object, Command>() {{
-
-                    put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero(mecDrive, time, voltageSensor, imu, wobbleSystem)));
+                new SelectCommand(new HashMap<Object, Command>() {{
+                    put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero_Shoot(mecDrive, time, voltageSensor, imu, wobbleSystem, shooterSystem)));
                     put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
                     put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
                 }},visionSystem::getStackSize)

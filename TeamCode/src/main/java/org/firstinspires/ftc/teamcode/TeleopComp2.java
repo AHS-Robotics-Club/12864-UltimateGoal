@@ -97,7 +97,7 @@ public class TeleopComp2 extends CommandOpMode {
                     if (pwrSelect < 0.05) {
                         pwrSelect = 1;
                     } else {
-                        pwrSelect -= 0.25;
+                        pwrSelect -= 0.05;
                     }
                 }));
         dpadUp = new GamepadButton(m_driverOp, GamepadKeys.Button.DPAD_UP)
@@ -105,7 +105,7 @@ public class TeleopComp2 extends CommandOpMode {
                     if (pwrSelect > 0.95) {
                         pwrSelect = 0;
                     } else {
-                        pwrSelect += 0.25;
+                        pwrSelect += 0.05;
                     }
                 }));
 

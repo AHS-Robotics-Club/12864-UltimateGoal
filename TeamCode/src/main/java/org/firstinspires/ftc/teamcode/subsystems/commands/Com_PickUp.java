@@ -27,7 +27,7 @@ public class Com_PickUp extends CommandBase {
         timer.reset();
         motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(320);
+        motor.setTargetPosition(305);
         motor.stopMotor();
     }
     @Override
@@ -41,6 +41,6 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 0.65;
+        return motor.atTargetPosition() || timer.seconds() > 0.20;
     }
 }

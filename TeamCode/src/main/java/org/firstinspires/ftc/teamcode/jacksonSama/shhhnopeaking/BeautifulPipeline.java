@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class BeautifulPipeline{
     private boolean rects;
     Mat matYCrCb = new Mat();
+    Mat test = new Mat();
+    private double topAverage;
     ArrayList<Mat> rectangle = new ArrayList<Mat>();
     ArrayList<Mat> block = new ArrayList<Mat>();
     public BeautifulPipeline(boolean usesRect){
@@ -54,6 +56,16 @@ public class BeautifulPipeline{
     }
     public void submatAndExtract(Rect rect){
         block.add(matYCrCb.submat(rect));
-        Core.extractChannel(block.get(block.size()-1), new Mat(), 2);
+//        Core.extractChannel(block.get(block.size()-1), new Mat(), 2);
+        Core.extractChannel(block.get(block.size()-1), test, 2);
+    }
+    public void testAvg(){
+        Scalar topMean = Core.mean(test);
+
+        topAverage = topMean.val[0];
+
+    }
+    public double getAvg(){
+        return topAverage;
     }
 }

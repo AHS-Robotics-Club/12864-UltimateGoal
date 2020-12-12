@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.ElapsedWait;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PickUp;
@@ -26,11 +27,11 @@ public class GroupZero extends SequentialCommandGroup {
                 new Com_Rotate(drive, imu, 180),
                 new Com_DriveTime(drive, -0.55, 0D, 0D, time, 1.3),
                 new Com_PutDown(wobbleSystem, time),
-                new WaitCommand(3000),
+                new ElapsedWait(1000),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
                         bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
-                new WaitCommand(3000),
+                new ElapsedWait(1000),
                 new Com_PickUp(wobbleSystem, time));
     }
 }
