@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 
-public class Com_PickUp extends CommandBase {
+public class Com_AutonLift extends CommandBase {
     private final WobbleSystem wobblySystem;
     private Motor motor;
     private ElapsedTime timer;
-    public Com_PickUp(WobbleSystem subby, ElapsedTime time){
+    public Com_AutonLift(WobbleSystem subby, ElapsedTime time){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
 
@@ -32,7 +31,7 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public void execute(){
-        wobblySystem.armUp();
+        wobblySystem.autonUp();
     }
     @Override
     public void end(boolean interruptable){
@@ -41,6 +40,6 @@ public class Com_PickUp extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 0.25;
+        return motor.atTargetPosition() || timer.seconds() > 0.20;
     }
 }

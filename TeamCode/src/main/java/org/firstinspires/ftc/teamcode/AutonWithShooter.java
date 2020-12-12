@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.ElapsedWait;
 import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
 import org.firstinspires.ftc.teamcode.subsystems.ContourVisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSystem;
 import org.firstinspires.ftc.teamcode.subsystems.VisionSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
@@ -42,7 +43,7 @@ import static com.arcrobotics.ftclib.hardware.motors.Motor.ZeroPowerBehavior.BRA
 @Autonomous(name="Kanye Shoot")
 public class AutonWithShooter extends CommandOpMode {
     private Motor fL, bL, fR, bR;
-    private Motor wobble, shot;
+    private Motor wobble, shot, intake;
     private CRServo servo;
     private UGContourRingDetector ugContourRingDetector;
     private DriveSystem mecDrive;
@@ -56,7 +57,7 @@ public class AutonWithShooter extends CommandOpMode {
     private Com_PutDown putDown;
 
     private ShooterSystem shooterSystem;
-
+    private IntakeSystem intakeSystem;
     private ElapsedTime time;
     private RevIMU imu;
     private VoltageSensor voltageSensor;
@@ -77,6 +78,8 @@ public class AutonWithShooter extends CommandOpMode {
 
         wobble = new Motor(hardwareMap, "wobble");
         servo = new CRServo(hardwareMap, "servo");
+        intake = new Motor(hardwareMap, "intake", Motor.GoBILDA.BARE);
+
         wobble.setRunMode(Motor.RunMode.PositionControl);
         wobble.setZeroPowerBehavior(BRAKE);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -91,6 +94,7 @@ public class AutonWithShooter extends CommandOpMode {
         time = new ElapsedTime();
         mecDrive = new DriveSystem(fL, fR, bL, bR);
         wobbleSystem = new WobbleSystem(servo, wobble, telemetry);
+        intakeSystem = new IntakeSystem(intake);
         putDown = new Com_PutDown(wobbleSystem, time);
         shooterSystem = new ShooterSystem(shot, telemetry, ()->pewr);
         visionSystem = new ContourVisionSystem(ugContourRingDetector, telemetry);
@@ -110,9 +114,11 @@ public class AutonWithShooter extends CommandOpMode {
 //                        () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
 //                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
                 new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.29),
+                new ElapsedWait(500),
                 visionCommand,
                 new SelectCommand(new HashMap<Object, Command>() {{
-                    put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero_Shoot(mecDrive, time, voltageSensor, imu, wobbleSystem, shooterSystem)));
+                    put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero_Shoot(mecDrive, time, voltageSensor,
+                            imu, wobbleSystem, shooterSystem, intakeSystem)));
                     put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
                     put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
                 }},visionSystem::getStackSize)
