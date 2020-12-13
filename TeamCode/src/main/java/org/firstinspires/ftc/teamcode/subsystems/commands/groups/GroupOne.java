@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.ElapsedWait;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
+import org.firstinspires.ftc.teamcode.subsystems.commands.Com_AutonDown;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_AutonLift;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PickUp;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_PutDown;
@@ -24,8 +25,8 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_RotateTo(drive, imu, 0),
                 new Com_DriveTime(drive, -0.55, 0D, 0D, time, 3.5),
                 new Com_RotateTo(drive, imu, 0),
-                new Com_DriveTime(drive, 0D, -0.55, 0D, time, 4.5),
-                new Com_PutDown(wobbleSystem, time),
+                new Com_DriveTime(drive, 0D, -0.55, 0D, time, 4.75),
+                new Com_AutonDown(wobbleSystem, time),
                 new ElapsedWait(1000),
                 new FunctionalCommand(
                         () -> { return; }, wobbleSystem::putMeDownUwU,
@@ -34,7 +35,7 @@ public class GroupOne extends SequentialCommandGroup {
                 new Com_AutonLift(wobbleSystem, time),
                 new ElapsedWait(1000),
                 new Com_Rotate(drive, imu, 180),
-                new Com_DriveTime(drive, 0D, -0.55, 0D, time, 1.12)
+                new Com_DriveTime(drive, 0D, -0.55, 0D, time, 1.13)
                 );
     }
 }

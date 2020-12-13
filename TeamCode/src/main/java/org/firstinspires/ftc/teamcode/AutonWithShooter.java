@@ -31,7 +31,9 @@ import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_DriveTime;
 import org.firstinspires.ftc.teamcode.subsystems.commands.Com_Vision;
 import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Rotate;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupFour;
+import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupFour_Shoot;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupOne;
+import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupOne_Shoot;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupZero;
 import org.firstinspires.ftc.teamcode.subsystems.commands.groups.GroupZero_Shoot;
 import org.openftc.easyopencv.OpenCvInternalCamera;
@@ -113,14 +115,16 @@ public class AutonWithShooter extends CommandOpMode {
 //                new FunctionalCommand(
 //                        () -> { return; }, wobbleSystem::spinMeRightRoundBaby,
 //                        bool -> wobbleSystem.servoStop(), () -> true, wobbleSystem),
-                new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.29),
-                new ElapsedWait(500),
+                new Com_DriveTime(mecDrive, 0D, -0.55, 0D, time, 0.3),
+                new ElapsedWait(800),
                 visionCommand,
                 new SelectCommand(new HashMap<Object, Command>() {{
                     put(VisionSystem.Size.ZERO, new ScheduleCommand(new GroupZero_Shoot(mecDrive, time, voltageSensor,
                             imu, wobbleSystem, shooterSystem, intakeSystem)));
-                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne(mecDrive, time, voltageSensor, wobbleSystem, imu)));
-                    put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour(mecDrive, time, voltageSensor, imu, wobbleSystem)));
+                    put(VisionSystem.Size.ONE, new ScheduleCommand(new GroupOne_Shoot(mecDrive, time, voltageSensor,
+                            imu, wobbleSystem, shooterSystem, intakeSystem)));
+                    put(VisionSystem.Size.FOUR, new ScheduleCommand(new GroupFour_Shoot(mecDrive, time, voltageSensor,
+                            imu, wobbleSystem, shooterSystem, intakeSystem)));
                 }},visionSystem::getStackSize)
         );
 

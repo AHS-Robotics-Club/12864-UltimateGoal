@@ -22,7 +22,7 @@ public class WobbleSystem extends SubsystemBase {
     }
     public void spinMeRightRoundBaby(){
 //        crServo.turnToAngle(18);
-        crServo.set(1.0);
+        crServo.set(1.5);
     }
     public void putMeDownUwU(){
 //        crServo.turnToAngle(90);
@@ -32,17 +32,18 @@ public class WobbleSystem extends SubsystemBase {
         motor.stopMotor();
     }
     public void servoStop(){
-        crServo.stop();
+//        crServo.stop();
     }
     public Motor getMotor(){
         return motor;
     }
     public void armUp(){
-        motor.set(0.65);
+        motor.set(0.75);
     }
     public void armDown(){
-        motor.set(0.25);
+        motor.set(0.35);
     }
+    public void autonDown(){motor.set(0.20);}
     public void autonUp(){motor.set(0.45);}
 
     @Override

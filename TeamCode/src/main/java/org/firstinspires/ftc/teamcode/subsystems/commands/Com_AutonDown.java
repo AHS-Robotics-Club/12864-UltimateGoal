@@ -1,21 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSystem;
 
-public class Com_PutDown extends CommandBase {
+public class Com_AutonDown extends CommandBase {
 
     private final WobbleSystem wobblySystem;
 
     private Motor motor;
     private ElapsedTime timer;
 
-    public Com_PutDown(WobbleSystem subby, ElapsedTime timey){
+    public Com_AutonDown(WobbleSystem subby, ElapsedTime timey){
         wobblySystem = subby;
         motor = wobblySystem.getMotor();
 
@@ -28,15 +26,15 @@ public class Com_PutDown extends CommandBase {
     @Override
     public void initialize(){
         timer.reset();
-        motor.setPositionCoefficient(0.005);
+        motor.setPositionCoefficient(0.01);
         motor.setPositionTolerance(10);
-        motor.setTargetPosition(-400);
+        motor.setTargetPosition(-220);
         motor.stopMotor();
 
     }
     @Override
     public void execute(){
-        wobblySystem.armDown();
+        wobblySystem.autonDown();
     }
     @Override
     public void end(boolean interruptable){
@@ -45,6 +43,6 @@ public class Com_PutDown extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return motor.atTargetPosition() || timer.seconds() > 2.0;
+        return motor.atTargetPosition() || timer.seconds() > 1.8;
     }
 }
