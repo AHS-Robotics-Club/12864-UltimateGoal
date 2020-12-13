@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Drive;
 
 @TeleOp(name="KekW")
 public class TeleMain extends CommandOpMode {
-    //Motors
+    //Servos and Motors
     private Motor fL, fR, bL, bR;
 
     //Subsystems
@@ -26,10 +27,12 @@ public class TeleMain extends CommandOpMode {
     //Extranious
     private GamepadEx m_driverOp;
     private Button slowDrive;
+    private FtcDashboard dashboard;
     public double mult = 1.0;
 
     @Override
     public void initialize() {
+        //Servos and Motors
         fL = new Motor(hardwareMap, "fL");
         fR = new Motor(hardwareMap, "fR");
         bL = new Motor(hardwareMap, "bL");
@@ -37,8 +40,11 @@ public class TeleMain extends CommandOpMode {
 
         bL.setInverted(true);
 
+        //Controller
         m_driverOp = new GamepadEx(gamepad1);
+        dashboard = FtcDashboard.getInstance();
 
+        //Subsystems and Commands
         driveSystem = new DriveSystem(fL, fR, bL, bR);
         driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX, ()->mult);
         slowDrive = new GamepadButtonB(m_driverOp, GamepadKeys.Button.Y)
@@ -48,3 +54,4 @@ public class TeleMain extends CommandOpMode {
         driveSystem.setDefaultCommand(driveCommand);
     }
 }
+
