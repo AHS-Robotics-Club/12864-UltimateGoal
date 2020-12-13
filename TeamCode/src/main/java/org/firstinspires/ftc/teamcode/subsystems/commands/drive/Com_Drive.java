@@ -20,6 +20,15 @@ public class Com_Drive extends CommandBase {
 
         addRequirements(subsystem);
     }
+    public Com_Drive(DriveSystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn){
+        mecDrive = subsystem;
+        m_strafe = strafe;
+        m_forward = forward;
+        m_turn = turn;
+        multiplier = ()-> 1.0;
+
+        addRequirements(subsystem);
+    }
 
     @Override
     public void execute(){
