@@ -40,17 +40,9 @@ public class TeleopDriveOnly extends CommandOpMode {
 
         driveCommand = new Com_Drive(mecDrive, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX);
 
+        register(mecDrive);
         mecDrive.setDefaultCommand(driveCommand);
 
-        register(mecDrive, new SubsystemBase(){
-            @Override
-            public void periodic() {
-                telemetry.addData("imu heading", imu.getHeading());
-                telemetry.update();
-            }
-        });
-
-        schedule(driveCommand);
     }
 }
 
