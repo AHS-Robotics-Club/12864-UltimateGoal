@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.vision.UGRectDetector;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingDetector;
-import org.firstinspires.ftc.teamcode.stolenVision.UGContourRingPipeline;
+import org.firstinspires.ftc.teamcode.jacksonSama.stolenVision.UGContourRingDetector;
+import org.firstinspires.ftc.teamcode.jacksonSama.stolenVision.UGContourRingPipeline;
 
 public class ContourVisionSystem extends SubsystemBase {
     private UGContourRingDetector ugContourRingDetector;
