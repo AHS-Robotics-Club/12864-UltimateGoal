@@ -8,21 +8,23 @@ import java.util.function.DoubleSupplier;
 
 public class Com_Drive extends CommandBase {
     private final DriveSystem mecDrive;
-    private final DoubleSupplier m_strafe;
-    private final DoubleSupplier m_forward;
-    private final DoubleSupplier m_turn;
+    private final DoubleSupplier m_strafe, m_forward, m_turn;
+    private final DoubleSupplier multiplier;
 
-    public Com_Drive(DriveSystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn){
+    public Com_Drive(DriveSystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, DoubleSupplier mult){
         mecDrive = subsystem;
         m_strafe = strafe;
         m_forward = forward;
         m_turn = turn;
+        multiplier = mult;
 
         addRequirements(subsystem);
     }
 
     @Override
     public void execute(){
-        mecDrive.drive(m_strafe.getAsDouble(), m_forward.getAsDouble(), m_turn.getAsDouble());
+        mecDrive.drive(m_strafe.getAsDouble() * multiplier.getAsDouble(),
+                m_forward.getAsDouble() * multiplier.getAsDouble(),
+                m_turn.getAsDouble() * multiplier.getAsDouble());
     }
 }

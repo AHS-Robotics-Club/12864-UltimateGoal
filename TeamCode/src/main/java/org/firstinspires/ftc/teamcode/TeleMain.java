@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.button.Button;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.jacksonSama.shhhnopeaking.GamepadButtonB;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.subsystems.commands.drive.Com_Drive;
 
@@ -21,6 +25,8 @@ public class TeleMain extends CommandOpMode {
 
     //Extranious
     private GamepadEx m_driverOp;
+    private Button slowDrive;
+    public double mult = 1.0;
 
     @Override
     public void initialize() {
@@ -34,7 +40,9 @@ public class TeleMain extends CommandOpMode {
         m_driverOp = new GamepadEx(gamepad1);
 
         driveSystem = new DriveSystem(fL, fR, bL, bR);
-        driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX);
+        driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX, ()->mult);
+        slowDrive = new GamepadButtonB(m_driverOp, GamepadKeys.Button.Y)
+                .toggleWhenPressed(()->mult = 1.0, ()->mult = 0.5);
 
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
