@@ -28,7 +28,7 @@ public class TeleMain extends CommandOpMode {
 
     //Extranious
     private GamepadEx m_driverOp;
-    private Button slowDrive;
+//    private Button slowDrive;
     private RevIMU imu;
     private FtcDashboard dashboard;
     public double mult = 1.0;
