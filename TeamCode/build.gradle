@@ -13,6 +13,8 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 repositories {
     maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
@@ -20,4 +22,8 @@ repositories {
 
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+    implementation 'com.arcrobotics.ftclib:vision:1.1.0' // vision
+    implementation 'com.arcrobotics:ftclib:1.2.0-beta' // core
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version" //Kotlin
 }

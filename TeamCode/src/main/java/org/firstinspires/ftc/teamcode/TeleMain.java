@@ -54,7 +54,11 @@ public class TeleMain extends CommandOpMode {
         //Subsystems and Commands
         driveSystem = new DriveSystem(fL, fR, bL, bR);
         driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX, ()->mult);
-        slowDrive = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
+//       Old Method no longer necessary:
+//        slowDrive = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
+//                .toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
+
+        m_driverOp.getGamepadButton(GamepadKeys.Button.Y)
                 .toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
 
         register(driveSystem);
