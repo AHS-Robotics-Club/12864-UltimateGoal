@@ -314,7 +314,6 @@ public class FtcRobotControllerActivity extends Activity
         popupMenu.inflate(R.menu.ftc_robot_controller);
         FtcDashboard.populateMenu(popupMenu.getMenu());
         popupMenu.show();
-        FtcDashboard.start();
       }
     });
 
@@ -383,6 +382,7 @@ public class FtcRobotControllerActivity extends Activity
     }
 
     FtcAboutActivity.setBuildTimeFromBuildConfig(BuildConfig.BUILD_TIME);
+    FtcDashboard.start();
   }
 
   protected UpdateUI createUpdateUI() {
