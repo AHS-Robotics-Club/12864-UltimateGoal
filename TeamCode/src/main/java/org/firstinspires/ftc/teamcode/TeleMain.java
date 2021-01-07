@@ -37,8 +37,6 @@ public class TeleMain extends CommandOpMode {
         bL = new Motor(hardwareMap, "bL");
         bR = new Motor(hardwareMap, "bR");
 
-        bL.setInverted(true);
-
         //imu
         imu = new RevIMU(hardwareMap);
         imu.init();

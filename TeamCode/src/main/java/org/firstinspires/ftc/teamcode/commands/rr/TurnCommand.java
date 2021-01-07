@@ -17,6 +17,11 @@ public class TurnCommand extends CommandBase {
     }
 
     @Override
+    public void execute(){
+        drive.update();
+    }
+
+    @Override
     public void initialize() {
         drive.turn(angle);
     }

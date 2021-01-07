@@ -16,7 +16,10 @@ public class TrajectoryFollowerCommand extends CommandBase {
 
         addRequirements(drive);
     }
-
+    @Override
+    public void execute(){
+        drive.update();
+    }
     @Override
     public void initialize() {
         drive.followTrajectory(trajectory);

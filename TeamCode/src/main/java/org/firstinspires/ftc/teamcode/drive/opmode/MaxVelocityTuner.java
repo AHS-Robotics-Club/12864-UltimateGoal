@@ -60,6 +60,7 @@ public class MaxVelocityTuner extends CommandOpMode {
         );
 
         RunCommand runCommand = new RunCommand(() -> {
+            drive.update();
             Pose2d poseVelo = Objects.requireNonNull(
                     drive.getPoseVelocity(),
                     "poseVelocity() must not be null. " +

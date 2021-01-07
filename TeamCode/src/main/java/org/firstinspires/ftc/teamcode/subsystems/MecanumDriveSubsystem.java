@@ -27,14 +27,14 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     public MecanumDriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
         this.drive = drive;
         fieldCentric = isFieldCentric;
-        init();
+//        init();
     }
 
-    public void init() {
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.setMotorPowers(0, 0, 0, 0);
-        drive.setPoseEstimate(new Pose2d());
-    }
+//    public void init() {
+//        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        drive.setMotorPowers(0, 0, 0, 0);
+//        drive.setPoseEstimate(new Pose2d());
+//    }
 
     public void setMode(DcMotor.RunMode mode) {
         drive.setMode(mode);
@@ -48,8 +48,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         drive.setPoseEstimate(pose);
     }
 
-    @Override
-    public void periodic() {
+    public void update() {
         drive.update();
     }
 
