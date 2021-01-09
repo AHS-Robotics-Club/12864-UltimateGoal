@@ -39,7 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void flickReset(){
-        if (timedAction.running())
+        if (!timedAction.running())
             timedAction.reset();
     }
 
