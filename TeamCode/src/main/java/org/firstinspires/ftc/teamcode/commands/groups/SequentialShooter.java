@@ -8,15 +8,11 @@ import org.firstinspires.ftc.teamcode.commands.Com_Shooter;
 
 public class SequentialShooter extends SequentialCommandGroup {
 
-    private InstantCommand runFlyWheelCommand;
-    private WaitCommand waitCommand;
     private Com_Shooter shooterCommand;
 
-    public SequentialShooter(InstantCommand commandOne, WaitCommand commandTwo,
-                             Com_Shooter commandThree) {
-        runFlyWheelCommand = commandOne;
-        waitCommand = commandTwo;
-        shooterCommand = commandThree;
+    public SequentialShooter(InstantCommand runFlyWheelCommand, WaitCommand waitCommand,
+                             Com_Shooter shooterCommand) {
+        this.shooterCommand = shooterCommand;
 
         addCommands(runFlyWheelCommand, waitCommand, shooterCommand);
     }
@@ -24,5 +20,6 @@ public class SequentialShooter extends SequentialCommandGroup {
     @Override
     public void end(boolean interrupted){
         shooterCommand.stopShooter();
+        shooterCommand.resetFlicker();
     }
 }

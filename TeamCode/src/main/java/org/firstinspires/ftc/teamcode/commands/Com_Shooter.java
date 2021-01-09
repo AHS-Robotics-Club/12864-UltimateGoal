@@ -23,12 +23,11 @@ public class Com_Shooter extends CommandBase {
         shooterSubsystem.flick();
     }
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
     public void stopShooter(){
         shooterSubsystem.stop();
+    }
+
+    public void resetFlicker(){
+        shooterSubsystem.flickReset();
     }
 }
