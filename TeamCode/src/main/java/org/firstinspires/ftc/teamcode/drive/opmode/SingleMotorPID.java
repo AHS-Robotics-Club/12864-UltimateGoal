@@ -36,7 +36,7 @@ public class SingleMotorPID extends CommandOpMode {
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        motor = new  Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_435);
+        motor = new  Motor(hardwareMap, "shoot", Motor.GoBILDA.RPM_435);
         motor.setRunMode(Motor.RunMode.VelocityControl);
 
         gamepad = new GamepadEx(gamepad1);
