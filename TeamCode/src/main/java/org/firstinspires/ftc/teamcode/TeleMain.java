@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.commands.Com_Intake;
 import org.firstinspires.ftc.teamcode.commands.Com_Outtake;
 import org.firstinspires.ftc.teamcode.commands.Com_Shooter;
+import org.firstinspires.ftc.teamcode.commands.groups.SequentialShooter;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSystem;
 import org.firstinspires.ftc.teamcode.commands.drive.Com_Drive;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -39,7 +40,7 @@ public class TeleMain extends CommandOpMode {
     private Com_Shooter shooterCommand;
     private Com_Intake intakeCommand;
     private Com_Outtake outtakeCommand;
-    private SequentialCommandGroup shootCommandGroup;
+    private SequentialShooter shootCommandGroup;
     private InstantCommand runFlyWheelCommand;
 
     //Extranious
@@ -73,8 +74,8 @@ public class TeleMain extends CommandOpMode {
 
         //FlickerAction
         flickerAction = new TimedAction(
-                ()-> flicker.setPosition(0.27),
                 ()-> flicker.setPosition(0.5),
+                ()-> flicker.setPosition(0.27),
                 500,
                 true
         );
@@ -85,9 +86,9 @@ public class TeleMain extends CommandOpMode {
 
         shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, telemetry);
         shooterCommand = new Com_Shooter(shooterSystem);
-        runFlyWheelCommand = new InstantCommand(()->flyWheel.set(1.0), shooterSystem);
-        shootCommandGroup = new SequentialCommandGroup(runFlyWheelCommand,
-                new WaitCommand(1000),shooterCommand);
+        runFlyWheelCommand = new InstantCommand(shooterSystem::shoot, shooterSystem);
+        shootCommandGroup = new SequentialShooter(runFlyWheelCommand,
+                new WaitCommand(1000), shooterCommand);
 
         intakeSystem = new IntakeSubsystem(intakeA);
         intakeCommand = new Com_Intake(intakeSystem);
@@ -100,13 +101,12 @@ public class TeleMain extends CommandOpMode {
         m_driverOp.getGamepadButton(GamepadKeys.Button.Y)
                 .toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
 
-        m_driverOp.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(shootCommandGroup);
+        m_driverOp.getGamepadButton(GamepadKeys.Button.A).whenHeld(shootCommandGroup);
 
-        m_driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).toggleWhenActive(intakeCommand);
-        m_driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).toggleWhenActive(outtakeCommand);
+        m_driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
+        m_driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
 
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
     }
 }
-

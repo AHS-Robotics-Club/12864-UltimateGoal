@@ -13,12 +13,22 @@ public class Com_Shooter extends CommandBase {
         addRequirements(shooterSubsystem);
     }
 
-    public void execute(){
+    @Override
+    public void initialize(){
         shooterSubsystem.flickReset();
+    }
+
+    @Override
+    public void execute(){
         shooterSubsystem.flick();
     }
 
-    public void end(boolean interrupted) {
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
+
+    public void stopShooter(){
         shooterSubsystem.stop();
     }
 }
