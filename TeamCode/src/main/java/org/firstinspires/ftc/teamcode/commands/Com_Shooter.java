@@ -14,7 +14,8 @@ public class Com_Shooter extends CommandBase {
     }
 
     public void execute(){
-        shooterSubsystem.shoot();
+        shooterSubsystem.flickReset();
+        shooterSubsystem.flick();
     }
 
     public void end(boolean interrupted) {
