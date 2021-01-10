@@ -27,7 +27,7 @@ public class Com_Shooter extends CommandBase {
         shooterSubsystem.stop();
     }
 
-    public void resetFlicker(){
-        shooterSubsystem.flickReset();
+    public void returnHome(){
+        shooterSubsystem.homePos();
     }
 }

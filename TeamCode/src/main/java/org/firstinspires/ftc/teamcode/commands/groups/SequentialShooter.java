@@ -20,6 +20,6 @@ public class SequentialShooter extends SequentialCommandGroup {
     @Override
     public void end(boolean interrupted){
         shooterCommand.stopShooter();
-        shooterCommand.resetFlicker();
+        shooterCommand.returnHome();
     }
 }
