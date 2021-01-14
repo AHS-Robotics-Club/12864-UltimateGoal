@@ -20,6 +20,7 @@ public class Com_Shooter extends CommandBase {
 
     @Override
     public void execute(){
+        shooterSubsystem.flickReset();
         shooterSubsystem.flick();
     }
 

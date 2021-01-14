@@ -60,6 +60,7 @@ public class TeleMain extends CommandOpMode {
         bR = new Motor(hardwareMap, "bR");
 
         flyWheel = new Motor(hardwareMap, "shoot");
+        flyWheel.setInverted(true);
         intakeA = new Motor(hardwareMap, "intakeA");
 
         flicker = new SimpleServo(hardwareMap, "flicker", 0, 270);
@@ -76,7 +77,7 @@ public class TeleMain extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()-> flicker.setPosition(0.5),
                 ()-> flicker.setPosition(0.27),
-                500,
+                600,
                 true
         );
 
@@ -88,7 +89,7 @@ public class TeleMain extends CommandOpMode {
         shooterCommand = new Com_Shooter(shooterSystem);
         runFlyWheelCommand = new InstantCommand(shooterSystem::shoot, shooterSystem);
         shootCommandGroup = new SequentialShooter(runFlyWheelCommand,
-                new WaitCommand(1000), shooterCommand);
+                new WaitCommand(1500), shooterCommand);
 
         intakeSystem = new IntakeSubsystem(intakeA);
         intakeCommand = new Com_Intake(intakeSystem);
