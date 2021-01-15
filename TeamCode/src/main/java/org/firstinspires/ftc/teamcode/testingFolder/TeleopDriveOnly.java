@@ -29,8 +29,6 @@ public class TeleopDriveOnly extends CommandOpMode {
 
         imu = new RevIMU(hardwareMap);
         imu.init();
-        //one of our motors is messed up so it has to be inverted woooooo
-        bL.setInverted(true);
 
         mecDrive = new DriveSystem(fL, fR, bL, bR, imu);
 

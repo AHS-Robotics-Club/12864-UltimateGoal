@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 @Autonomous(group = "drive")
 public class TrackWidthTuner extends CommandOpMode {
 
-    public static double ANGLE = 180; // deg
+    public static double ANGLE = 180; // rad
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms
 
@@ -52,6 +52,8 @@ public class TrackWidthTuner extends CommandOpMode {
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 
+        turnCommand = new TurnCommand(drive, Math.toRadians(ANGLE));
+
         telemetry.addLine("Press play to begin the track width tuner routine");
         telemetry.addLine("Make sure your robot has enough clearance to turn smoothly");
         telemetry.update();
@@ -66,7 +68,7 @@ public class TrackWidthTuner extends CommandOpMode {
                     trackWidthStats = new MovingStatistics(NUM_TRIALS);
                     trial = 0;
                 }
-        ));
+                ));
 
         InstantCommand finishCommand = new InstantCommand(() -> {
             telemetry.clearAll();
@@ -78,8 +80,8 @@ public class TrackWidthTuner extends CommandOpMode {
         });
 
         RunCommand tuneCommand = new RunCommand(() -> {
-            if (turnCommand == null || !turnCommand.isScheduled()) {
-                if (turnCommand != null) {
+            if (trial < NUM_TRIALS && (turnCommand == null || !turnCommand.isScheduled())) {
+                if(headingAccumulator != 0) {
                     double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
                     trackWidthStats.add(trackWidth);
                 }
@@ -92,21 +94,20 @@ public class TrackWidthTuner extends CommandOpMode {
                 headingAccumulator = 0;
                 lastHeading = 0;
 
-                turnCommand = new TurnCommand(drive, ANGLE);
+                turnCommand = new TurnCommand(drive, Math.toRadians(ANGLE));
                 turnCommand.schedule();
-
                 trial++;
             } else {
                 double heading = drive.getPoseEstimate().getHeading();
                 headingAccumulator += Angle.norm(heading - lastHeading);
                 lastHeading = heading;
             }
-        }, drive);
+        });
 
         schedule(setupCommand.andThen(
                 new WaitUntilCommand(() -> trial == NUM_TRIALS)
-                    .deadlineWith(tuneCommand)
-                    .whenFinished(turnCommand::cancel),
+                        .deadlineWith(tuneCommand)
+                        .whenFinished(turnCommand::cancel),
                 finishCommand
         ));
     }
