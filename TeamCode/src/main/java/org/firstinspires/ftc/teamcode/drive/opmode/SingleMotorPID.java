@@ -24,7 +24,7 @@ public class SingleMotorPID extends CommandOpMode {
         TUNING_MODE
     }
 
-    public static double kP = 1.2, kI = 0, kD = 0.07, kS = 0, kV = 1.1;
+    public static double kP = 1.1, kI = 0, kD = 0.05, kS = 0, kV = 0.89;
 
     private GamepadEx gamepad;
     private Motor motor;
@@ -36,7 +36,7 @@ public class SingleMotorPID extends CommandOpMode {
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        motor = new  Motor(hardwareMap, "shoot", Motor.GoBILDA.RPM_435);
+        motor = new  Motor(hardwareMap, "shoot");
         motor.setRunMode(Motor.RunMode.VelocityControl);
 
         gamepad = new GamepadEx(gamepad1);

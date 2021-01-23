@@ -18,12 +18,16 @@ public class ShooterSubsystem extends SubsystemBase {
         this.flywheel = flywheel;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
-        this.flywheel.setVeloCoefficients(1.2, 0, 0.07);
-        this.flywheel.setFeedforwardCoefficients(0, 1.1);
+        this.flywheel.setVeloCoefficients(1.1, 0, 0.05);
+        this.flywheel.setFeedforwardCoefficients(0, 1.0);
 
         this.flicker = flicker;
         this.timedAction = timedAction;
         this.telemetry = telemetry;
+    }
+
+    public boolean isRunning() {
+        return timedAction.running();
     }
 
     public void shoot(){
@@ -38,6 +42,10 @@ public class ShooterSubsystem extends SubsystemBase {
         timedAction.run();
     }
 
+    public void resetEncoder(){
+        flywheel.resetEncoder();
+    }
+
     public void flickReset(){
         if (!timedAction.running())
             timedAction.reset();
@@ -46,9 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
         flicker.setPosition(0.27);
     }
 
-    @Override
-    public void periodic(){
-        telemetry.addData("Shooter Velocity:", flywheel.getCorrectedVelocity());
-        telemetry.update();
+    public void setRunMode(Motor.RunMode runMode){
+        flywheel.setRunMode(runMode);
     }
 }
