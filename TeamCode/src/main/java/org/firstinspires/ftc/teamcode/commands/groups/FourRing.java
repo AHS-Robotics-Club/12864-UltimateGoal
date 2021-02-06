@@ -21,12 +21,12 @@ import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 @Config
 public class FourRing extends SequentialCommandGroup {
 
-    public static double xBox = 40.0, yBox = -60.0;
-    public static double shootPosX = -60.0, shootPosY = 45.0;
+    public static double xBox = 45.0, yBox = -60.0;
+    public static double shootPosX = -57.5, shootPosY = 45.0;
     public static double secWobblePosX = -20.0, secWobblePosY = 0.0;
     public static double wobbleXTwo = -3.4, wobbleYTwo = -2.0;
-    public static double boxTwoX = 16.0, boxTwoY = 0.0;
-    public static double finalX = -5.0, finalY = -8.0;
+    public static double boxTwoX = 30.0, boxTwoY = 0.0;
+    public static double finalX = -8.8, finalY = -8.0;
 
     private Pose2d startPose = new Pose2d(-63.0, -40.0, Math.toRadians(180.0));
 
@@ -47,44 +47,45 @@ public class FourRing extends SequentialCommandGroup {
                 .lineToConstantHeading(shootPose)
                 .build();
 
-        Vector2d secondWobble = traj2.end().vec().plus(new Vector2d(secWobblePosX, secWobblePosY));
+//        Vector2d secondWobble = traj2.end().vec().plus(new Vector2d(secWobblePosX, secWobblePosY));
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end(), 0.0)
-                .splineToLinearHeading(new Pose2d(secondWobble, 0.0), Math.toRadians(-90.0))
+                .splineToLinearHeading(new Pose2d(-39.5,-22.5, 0.0), Math.toRadians(-90.0))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .splineToConstantHeading(traj3.end().vec().plus(new Vector2d(wobbleXTwo, wobbleYTwo)), 0.0)
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end(), 0)
+                .splineToSplineHeading(traj3.end().plus(new Pose2d(boxTwoX, boxTwoY, Math.toRadians(180.0))), Math.toRadians(-90.0))
+                .splineToConstantHeading(traj1.end().vec().plus(new Vector2d(finalX, finalY)), 0.0)
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end(), 0)
-                .splineTo(traj4.end().vec().plus(new Vector2d(boxTwoX, boxTwoY)), 0.0)
-                .splineToLinearHeading(traj1.end().plus(new Pose2d(finalX, finalY, Math.toRadians(180.0))), 0.0)
+                .forward(30.0)
                 .build();
 
         addCommands(
-                new InstantCommand(shooter::shoot, shooter),
-                new TrajectoryFollowerCommand(drive, traj0),
+                new ParallelDeadlineGroup(
+                        new TrajectoryFollowerCommand(drive, traj0),
+                        new Com_PutDown(wobbleSystem)
+                ),
                 new TrajectoryFollowerCommand(drive, traj1),
-                new Com_PutDown(wobbleSystem),
                 new InstantCommand(wobbleSystem::openGrabber, wobbleSystem),
-                new WaitCommand(500),
+                new WaitCommand(600),
                 new Com_PickUp(wobbleSystem),
                 new TrajectoryFollowerCommand(drive, traj2),
                 new RapidFireCommand(shooter),
-                new Com_PutDown(wobbleSystem),
                 new InstantCommand(shooter::stop, shooter),
-                new TrajectoryFollowerCommand(drive, traj3),
-                new TrajectoryFollowerCommand(drive, traj4),
+                new ParallelDeadlineGroup(
+                        new TrajectoryFollowerCommand(drive, traj3),
+                        new Com_PutDown(wobbleSystem)
+                ),
                 new InstantCommand(wobbleSystem::closeGrabber, wobbleSystem),
                 new WaitCommand(1000),
-                new Com_PickUp(wobbleSystem),
-                new TrajectoryFollowerCommand(drive, traj5),
-                new TurnCommand(drive, Math.toRadians(180)),
-                new Com_PutDown(wobbleSystem),
+                new TrajectoryFollowerCommand(drive, traj4),
                 new InstantCommand(wobbleSystem::openGrabber, wobbleSystem),
-                new WaitCommand(500),
-                new Com_PickUp(wobbleSystem)
+                new WaitCommand(700),
+                new Com_PickUp(wobbleSystem),
+                new TrajectoryFollowerCommand(drive, traj5)
         );
     }
 }

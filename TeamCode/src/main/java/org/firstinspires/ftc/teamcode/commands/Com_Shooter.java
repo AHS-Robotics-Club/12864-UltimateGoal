@@ -26,6 +26,11 @@ public class Com_Shooter extends CommandBase {
         shooterSubsystem.flickReset();
         shooterSubsystem.flick();
     }
+    
+    @Override
+    public void end(boolean interrupted){
+        shooterSubsystem.homePos();
+    }
 
     public void stopShooter(){
         shooterSubsystem.setRunMode(Motor.RunMode.RawPower);

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -10,6 +12,7 @@ import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.commands.Com_Intake;
 import org.firstinspires.ftc.teamcode.commands.Com_Outtake;
@@ -28,7 +31,7 @@ import org.firstinspires.ftc.teamcode.util.TimedAction;
 public class TeleMain extends CommandOpMode {
     //Servos and Motors
     private Motor fL, fR, bL, bR;
-    private Motor flyWheel, intakeA, arm;
+    private Motor flyWheel, intakeA, intakeB, arm;
     private SimpleServo flicker, grabber;
 
     //Subsystems
@@ -46,7 +49,7 @@ public class TeleMain extends CommandOpMode {
     private Com_PutDown putDownCommand;
     private SequentialShooter shootCommandGroup;
     private InstantCommand grabberCommand;
-    private InstantCommand runFlyWheelCommand;
+    private RunCommand runFlyWheelCommand;
 
     //Extranious
     private GamepadEx m_driverOp;
@@ -54,6 +57,7 @@ public class TeleMain extends CommandOpMode {
     private RevIMU imu;
     private FtcDashboard dashboard;
     private TimedAction flickerAction;
+    private VoltageSensor voltageSensor;
     public double mult = 1.0;
 
     @Override
@@ -65,7 +69,9 @@ public class TeleMain extends CommandOpMode {
         bR = new Motor(hardwareMap, "bR");
 
         flyWheel = new Motor(hardwareMap, "shoot");
+        flyWheel.setRunMode(Motor.RunMode.VelocityControl);
         intakeA = new Motor(hardwareMap, "intakeA");
+        intakeB = new Motor(hardwareMap, "intakeB");
         arm = new Motor(hardwareMap, "wobble", Motor.GoBILDA.RPM_312);
 
         flicker = new SimpleServo(hardwareMap, "flicker", 0, 270);
@@ -87,18 +93,18 @@ public class TeleMain extends CommandOpMode {
                 true
         );
 
+        //I DEMAND LEDS >:(
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         //Subsystems and Commands
         driveSystem = new DriveSystem(fL, fR, bL, bR);
         driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY,
                 m_driverOp::getRightX, ()->mult);
 
-        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, telemetry);
+        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, voltageSensor);
         shooterCommand = new Com_Shooter(shooterSystem);
-        runFlyWheelCommand = new InstantCommand(shooterSystem::shoot, shooterSystem);
-        shootCommandGroup = new SequentialShooter(runFlyWheelCommand,
-                new WaitCommand(1500), shooterCommand);
+        runFlyWheelCommand = new RunCommand(shooterSystem::shoot, shooterSystem);
 
-        intakeSystem = new IntakeSubsystem(intakeA);
+        intakeSystem = new IntakeSubsystem(intakeA, intakeB);
         intakeCommand = new Com_Intake(intakeSystem);
         outtakeCommand = new Com_Outtake(intakeSystem);
 
@@ -119,15 +125,28 @@ public class TeleMain extends CommandOpMode {
         m_driverOp.getGamepadButton(GamepadKeys.Button.Y)
                 .toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
 
-        m_driverOp.getGamepadButton(GamepadKeys.Button.A).whenHeld(shootCommandGroup);
+        m_driverOp.getGamepadButton(GamepadKeys.Button.A).whenHeld(shooterCommand);
 
         m_driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         m_driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
 
         m_driverOp.getGamepadButton(GamepadKeys.Button.X).whenPressed(grabberCommand);
         m_driverOp.getGamepadButton(GamepadKeys.Button.B).toggleWhenPressed(putDownCommand, pickUpCommand);
-        
+
+        m_driverOp.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .toggleWhenPressed(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> flyWheel.setRunMode(Motor.RunMode.VelocityControl)),
+                                new RunCommand(shooterSystem::shoot, shooterSystem)
+                        ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> flyWheel.setRunMode(Motor.RunMode.RawPower)),
+                                new RunCommand(shooterSystem::stop, shooterSystem)
+                        )
+                );
+
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
+        schedule(runFlyWheelCommand);
     }
 }

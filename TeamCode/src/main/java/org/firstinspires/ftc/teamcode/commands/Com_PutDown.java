@@ -21,7 +21,7 @@ public class Com_PutDown extends CommandBase {
     public void initialize(){
         arm.setPositionCoefficient(0.005);
         arm.setPositionTolerance(10);
-        arm.setTargetPosition(-470);
+        arm.setTargetPosition(-520);
     }
 
     @Override

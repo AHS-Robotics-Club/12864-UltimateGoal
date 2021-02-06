@@ -25,13 +25,11 @@ public class RapidFireCommand extends CommandBase {
 
     @Override
     public void execute() {
-        while (numShots < 3) {
-            if (!shooterSubsystem.isRunning()) {
-                shooterSubsystem.flickReset();
-                numShots++;
-            }
-            shooterSubsystem.flick();
+        if (!shooterSubsystem.isRunning()) {
+            shooterSubsystem.flickReset();
+            numShots++;
         }
+        shooterSubsystem.flick();
     }
 
     @Override

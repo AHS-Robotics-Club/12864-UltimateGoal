@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -10,6 +11,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.groups.FourRing;
@@ -46,6 +48,8 @@ public class AutonMain extends CommandOpMode {
     //Extranious
     private TimedAction flickerAction;
     private ElapsedTime time;
+    private VoltageSensor voltageSensor;
+    public boolean powerShotMode = false;
     //Poses
 
     //Trajectories
@@ -70,8 +74,9 @@ public class AutonMain extends CommandOpMode {
                 600,
                 true
         );
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, telemetry);
+        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, voltageSensor);
 
         ugContourRingDetector = new UGContourRingDetector(hardwareMap, "poopcam", telemetry, true);
         ugContourRingDetector.init();
@@ -83,17 +88,17 @@ public class AutonMain extends CommandOpMode {
         drive = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
         wobble = new WobbleSubsystem(arm, grabber);
 
+        wobble.closeGrabber();
 
         SequentialCommandGroup autonomous = new SequentialCommandGroup(
-                new WaitUntilCommand(this::isStarted),
+//                new WaitUntilCommand(this::isStarted),  Jacksons favorite line of code
                 visionCommand,
-                new InstantCommand(wobble::closeGrabber),
                 new SelectCommand(new HashMap<Object, Command>() {{
                         put(VisionSystem.Size.ZERO, (new ZeroRing(drive, wobble, shooterSystem)));
                         put(VisionSystem.Size.ONE, (new OneRing(drive, wobble, shooterSystem)));
                         put(VisionSystem.Size.FOUR, (new FourRing(drive, wobble, shooterSystem)));
                     }},visionSystem::getStackSize)
         );
-        schedule(autonomous);
+        schedule(new RunCommand(shooterSystem::shoot), autonomous);
     }
 }
