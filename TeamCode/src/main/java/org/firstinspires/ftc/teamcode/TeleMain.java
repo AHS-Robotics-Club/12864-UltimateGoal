@@ -1,17 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.commands.Com_Intake;
@@ -62,6 +63,7 @@ public class TeleMain extends CommandOpMode {
 
     @Override
     public void initialize() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //Servos and Motors
         fL = new Motor(hardwareMap, "fL");
         fR = new Motor(hardwareMap, "fR");
@@ -69,10 +71,14 @@ public class TeleMain extends CommandOpMode {
         bR = new Motor(hardwareMap, "bR");
 
         flyWheel = new Motor(hardwareMap, "shoot");
-        flyWheel.setRunMode(Motor.RunMode.VelocityControl);
+        flyWheel.resetEncoder();
         intakeA = new Motor(hardwareMap, "intakeA");
-        intakeB = new Motor(hardwareMap, "intakeB");
+        intakeB = new Motor(hardwareMap, "intakeB", Motor.GoBILDA.RPM_312);
+        intakeB.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeB.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm = new Motor(hardwareMap, "wobble", Motor.GoBILDA.RPM_312);
+        arm.motor.setDirection(DcMotor.Direction.REVERSE);
+        arm.encoder = intakeB.encoder;  // cool feature, hope it works
 
         flicker = new SimpleServo(hardwareMap, "flicker", 0, 270);
         grabber = new SimpleServo(hardwareMap, "wobbleS", -90, 180);
@@ -87,9 +93,9 @@ public class TeleMain extends CommandOpMode {
 
         //FlickerAction
         flickerAction = new TimedAction(
-                ()-> flicker.setPosition(0.5),
-                ()-> flicker.setPosition(0.27),
-                600,
+                ()-> flicker.setPosition(0.90),
+                ()-> flicker.setPosition(0.55),
+                350,
                 true
         );
 
@@ -102,7 +108,7 @@ public class TeleMain extends CommandOpMode {
 
         shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, voltageSensor);
         shooterCommand = new Com_Shooter(shooterSystem);
-        runFlyWheelCommand = new RunCommand(shooterSystem::shoot, shooterSystem);
+        runFlyWheelCommand = new RunCommand(shooterSystem::shoot);
 
         intakeSystem = new IntakeSubsystem(intakeA, intakeB);
         intakeCommand = new Com_Intake(intakeSystem);
@@ -137,16 +143,20 @@ public class TeleMain extends CommandOpMode {
                 .toggleWhenPressed(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> flyWheel.setRunMode(Motor.RunMode.VelocityControl)),
-                                new RunCommand(shooterSystem::shoot, shooterSystem)
+                                new RunCommand(shooterSystem::shoot)
                         ),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> flyWheel.setRunMode(Motor.RunMode.RawPower)),
-                                new RunCommand(shooterSystem::stop, shooterSystem)
+                                new RunCommand(shooterSystem::stop)
                         )
                 );
 
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
-        schedule(runFlyWheelCommand);
+        schedule(new RunCommand(() -> {
+            telemetry.addData("FlywheelSpeed", flyWheel.getCorrectedVelocity());
+            telemetry.addData("wobbleposition", arm.getCurrentPosition());
+            telemetry.update();
+        }));
     }
 }

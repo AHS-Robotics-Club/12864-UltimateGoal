@@ -27,13 +27,15 @@ public class LocalizationTest extends CommandOpMode {
     private MecanumDriveSubsystem drive;
     private MecanumDriveCommand driveCommand;
     private GamepadEx gamepad;
+    private Pose2d startPose = new Pose2d(-63.0, -40.0, Math.toRadians(180.0));
 
+    //Wobble position: -35, -25
     @Override
     public void initialize() {
         drive = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
 
         gamepad = new GamepadEx(gamepad1);
-
+        drive.setPoseEstimate(startPose);
         schedule(new RunCommand(() -> {
                 drive.update();
                 Pose2d poseEstimate = drive.getPoseEstimate();

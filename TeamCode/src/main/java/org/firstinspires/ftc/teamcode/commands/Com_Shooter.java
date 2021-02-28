@@ -17,8 +17,6 @@ public class Com_Shooter extends CommandBase {
     @Override
     public void initialize(){
         shooterSubsystem.flickReset();
-        shooterSubsystem.resetEncoder();
-        shooterSubsystem.setRunMode(Motor.RunMode.VelocityControl);
     }
 
     @Override

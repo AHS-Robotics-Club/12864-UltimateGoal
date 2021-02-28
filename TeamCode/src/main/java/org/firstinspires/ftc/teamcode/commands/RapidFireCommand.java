@@ -9,10 +9,18 @@ public class RapidFireCommand extends CommandBase {
 
     private ShooterSubsystem shooterSubsystem;
     private int numShots;
+    private int targetShots;
 
     public RapidFireCommand(ShooterSubsystem subsystem){
         shooterSubsystem = subsystem;
         numShots = 0;
+        targetShots = 3;
+        addRequirements(shooterSubsystem);
+    }
+    public RapidFireCommand(ShooterSubsystem subsystem, int targetShots){
+        shooterSubsystem = subsystem;
+        numShots = 0;
+        this.targetShots = targetShots;
         addRequirements(shooterSubsystem);
     }
 
@@ -20,7 +28,6 @@ public class RapidFireCommand extends CommandBase {
     public void initialize() {
         shooterSubsystem.flickReset();
         numShots = 0;
-        shooterSubsystem.setRunMode(Motor.RunMode.VelocityControl);
     }
 
     @Override
@@ -40,6 +47,6 @@ public class RapidFireCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return numShots == 3;
+        return numShots == targetShots;
     }
 }

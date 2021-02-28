@@ -82,11 +82,6 @@ public class ManualFeedforwardTuner extends CommandOpMode {
 
     @Override
     public void initialize() {
-        if (RUN_USING_ENCODER) {
-            RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
-                    "when using the built-in drive motor velocity PID.");
-        }
-
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         drive = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
@@ -133,6 +128,7 @@ public class ManualFeedforwardTuner extends CommandOpMode {
                             motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
                     drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    drive.updatePoseEstimate();
 
                     Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(),
                             "poseVelocity() must not be null. Ensure that the getWheelVelocities() " +

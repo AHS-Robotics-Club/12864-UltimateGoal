@@ -5,8 +5,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private Motor intakeA;
-    private Motor intakeB;
+    public Motor intakeA;
+    public Motor intakeB;
 
     public IntakeSubsystem(Motor intakeA, Motor intakeB){
         this.intakeA = intakeA;
@@ -14,7 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void start(){
-        intakeA.set(1.0);
+        intakeA.set(0.75);
         intakeB.set(1.0);
     }
     public void stop(){
@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeB.stopMotor();
     }
     public void outtake(){
-        intakeA.set(-1.0);
+        intakeA.set(-0.75);
         intakeB.set(-1.0);
     }
 }
