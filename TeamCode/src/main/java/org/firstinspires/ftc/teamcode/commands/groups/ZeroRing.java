@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.groups;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -9,6 +10,7 @@ import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.apache.commons.math3.stat.descriptive.moment.VectorialCovariance;
 import org.firstinspires.ftc.teamcode.commands.Com_PickUp;
 import org.firstinspires.ftc.teamcode.commands.Com_PutDown;
 import org.firstinspires.ftc.teamcode.commands.RapidFireCommand;
@@ -18,7 +20,12 @@ import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 
+import java.util.Vector;
+
+@Config
 public class ZeroRing extends SequentialCommandGroup{
+
+    public static double secondWobbleX = -36.8, secondWobbleY = -24.0;
 
     private Pose2d startPose = new Pose2d(-63.0, -40.0, Math.toRadians(180.0));
 
@@ -33,7 +40,7 @@ public class ZeroRing extends SequentialCommandGroup{
                 .splineToConstantHeading(new Vector2d(1.0, -60.0), 0.0)
                 .build();
 
-        Vector2d shootPose = traj1.end().vec().plus(new Vector2d(-24.0, 25.3));
+        Vector2d shootPose = traj1.end().vec().plus(new Vector2d(-25.0, 25.3));
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end(), true)
                 .lineToConstantHeading(shootPose)
@@ -43,11 +50,15 @@ public class ZeroRing extends SequentialCommandGroup{
 //        Vector2d secondWobble = traj2.end().vec().plus(new Vector2d(-14.0, 15.5));
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end(), 0.0)
-                .splineToLinearHeading(new Pose2d(-36.5,-23, 0.0), Math.toRadians(-90.0))
+                .splineToLinearHeading(new Pose2d(-20.0, -20.0, 0.0), Math.toRadians(-90.0))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end(), 0.0)
-                .splineToSplineHeading(traj3.end().plus(new Pose2d(16.0, 0.0, Math.toRadians(180.0))), 0.0)
+        Trajectory trajAlmost4 = drive.trajectoryBuilder(traj3.end())
+                .splineToConstantHeading(new Vector2d(secondWobbleX, secondWobbleY), 0.0)
+                .build();
+
+        Trajectory traj4 = drive.trajectoryBuilder(trajAlmost4.end(), 0.0)
+                .splineToSplineHeading(trajAlmost4.end().plus(new Pose2d(16.0, 0.0, Math.toRadians(180.0))), 0.0)
                 .splineToConstantHeading(traj1.end().vec().plus(new Vector2d(-12.0, -5.5)), 0.0)
                 .build();
 
@@ -73,6 +84,7 @@ public class ZeroRing extends SequentialCommandGroup{
                     new TrajectoryFollowerCommand(drive, traj3),
                     new Com_PutDown(wobbleSystem)
                 ),
+                new TrajectoryFollowerCommand(drive, trajAlmost4),
                 new InstantCommand(wobbleSystem::closeGrabber, wobbleSystem),
                 new WaitCommand(1000),
                 new TrajectoryFollowerCommand(drive, traj4),

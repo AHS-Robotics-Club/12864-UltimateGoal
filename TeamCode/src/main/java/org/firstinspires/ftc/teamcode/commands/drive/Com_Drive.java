@@ -34,6 +34,6 @@ public class Com_Drive extends CommandBase {
     public void execute(){
         mecDrive.drive(m_strafe.getAsDouble() * multiplier.getAsDouble(),
                 m_forward.getAsDouble() * multiplier.getAsDouble(),
-                m_turn.getAsDouble() * multiplier.getAsDouble());
+                m_turn.getAsDouble() * 0.92 * multiplier.getAsDouble());
     }
 }

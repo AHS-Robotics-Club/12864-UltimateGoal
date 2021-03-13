@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class DriveSystem extends SubsystemBase {
     private MecanumDrive drive;
@@ -39,7 +38,7 @@ public class DriveSystem extends SubsystemBase {
     //Strafe Speed, Forward Speed, and Turn Speed
     public void drive(double strfSpd, double fSpd, double trnSpd){
         if(!fieldCentric)
-            drive.driveRobotCentric(-strfSpd, -fSpd, -trnSpd*0.85, true);
+            drive.driveRobotCentric(-strfSpd, -fSpd, -trnSpd, true);
         else
             drive.driveFieldCentric(-strfSpd, -fSpd, -trnSpd, imu.getHeading(), true);
     }

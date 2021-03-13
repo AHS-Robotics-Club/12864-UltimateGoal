@@ -5,31 +5,38 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.commands.Com_Intake;
 import org.firstinspires.ftc.teamcode.commands.Com_PickUp;
 import org.firstinspires.ftc.teamcode.commands.Com_PutDown;
 import org.firstinspires.ftc.teamcode.commands.RapidFireCommand;
 import org.firstinspires.ftc.teamcode.commands.rr.TrajectoryFollowerCommand;
+import org.firstinspires.ftc.teamcode.commands.rr.TurnCommand;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
+
+import java.time.Instant;
 
 @Config
 public class OneRing extends SequentialCommandGroup {
 
     public static double xBox = 24.0, yBox = -36.0;
-    public static double shootPosX = -44.0, shootPosY = 22.0;
-    public static double secWobblePosX = -20.0, secWobblePosY = 0.0;
-    public static double wobbleXTwo = 16.0, wobbleYTwo = 0.0;
-    public static double boxTwoX = 16.0, boxTwoY = 0.0;
-    public static double finalX = -10.0, finalY = -5.0;
+    public static double shootPosX = -45, shootPosY = 22.0;
+    public static double secondWobbleX = -37.6, secondWobbleY = -21.0;
+    public static double finalX = -10.0, finalY = 0.0;
+    public static double backAmnt = 35.0;
+
 
     private Pose2d startPose = new Pose2d(-63.0, -40.0, Math.toRadians(180.0));
 
-    public OneRing(MecanumDriveSubsystem drive, WobbleSubsystem wobbleSystem, ShooterSubsystem shooter){
+    public OneRing(MecanumDriveSubsystem drive, WobbleSubsystem wobbleSystem, ShooterSubsystem shooter,
+                   IntakeSubsystem intakeSystem){
         drive.setPoseEstimate(startPose);
 
         Trajectory traj0 = drive.trajectoryBuilder(startPose)
@@ -62,13 +69,21 @@ public class OneRing extends SequentialCommandGroup {
                 .build();
 
         Trajectory trajAlmost4 = drive.trajectoryBuilder(traj3.end(), 0.0)
-                .splineToConstantHeading(new Vector2d(-38.5,-21.0), 0.0)
+                .splineToConstantHeading(new Vector2d(secondWobbleX, secondWobbleY), 0.0)
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(trajAlmost4.end(), 0)
-                .splineToConstantHeading(traj3.end().vec().plus(new Vector2d(0, 8)), Math.toRadians(90.0))
-                .splineToSplineHeading((new Pose2d(-10, -18, Math.toRadians(180.0))), Math.toRadians(-30.0))
+                .lineToConstantHeading(traj3.end().vec().plus(new Vector2d(0, 8)))
+                .splineToSplineHeading((new Pose2d(0.0, -18, Math.toRadians(180.0))), Math.toRadians(-90.0))
                 .splineToConstantHeading(traj1.end().vec().plus(new Vector2d(finalX, finalY)), 0.0)
+                .build();
+
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .forward(backAmnt)
+                .build();
+
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end(), Math.toRadians(10))
+                .splineToSplineHeading(traj4.end().plus(new Pose2d(-10.0, 0.0, 0.0)), 0.0)
                 .build();
 
         addCommands(
@@ -96,12 +111,15 @@ public class OneRing extends SequentialCommandGroup {
                 new Com_PutDown(wobbleSystem).raceWith(new WaitCommand(400)),
                 new InstantCommand(wobbleSystem::openGrabber, wobbleSystem),
                 new WaitCommand(500),
-                new Com_PickUp(wobbleSystem),
-                new TrajectoryFollowerCommand(drive,
-                        drive.trajectoryBuilder(traj4.end())
-                            .forward(6.9)
-                            .build()
-                )
+                new ParallelDeadlineGroup(
+                        new TrajectoryFollowerCommand(drive, traj5),
+                        new Com_PickUp(wobbleSystem),
+                        new InstantCommand(intakeSystem::start)
+                ),
+                new WaitCommand(400).andThen(new InstantCommand(intakeSystem::stop)),
+                new TurnCommand(drive, Math.toRadians(10)),
+                new RapidFireCommand(shooter, 2),
+                new TrajectoryFollowerCommand(drive, traj6)
         );
     }
 }
