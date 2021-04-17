@@ -14,7 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void start(){
-        intakeA.set(0.75);
+        intakeA.set(0.80);
         intakeB.set(1.0);
     }
     public void stop(){
@@ -25,4 +25,9 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeA.set(-0.75);
         intakeB.set(-1.0);
     }
+    public void autoIntake(){
+        intakeA.set(0.70);
+        intakeB.set(0.95);
+    }
+
 }

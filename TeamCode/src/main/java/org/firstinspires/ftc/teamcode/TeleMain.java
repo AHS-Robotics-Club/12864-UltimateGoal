@@ -16,6 +16,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.commands.Com_Intake;
@@ -36,6 +37,7 @@ import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 @TeleOp(name="KekW")
 public class TeleMain extends CommandOpMode {
+
     //Servos and Motors
     private Motor fL, fR, bL, bR;
     private Motor flyWheel, intakeA, intakeB, arm;
@@ -66,6 +68,7 @@ public class TeleMain extends CommandOpMode {
     private TimedAction flickerAction;
     private VoltageSensor voltageSensor;
     public double mult = 1.0;
+    public double shootMult = 1.0;
 
     @Override
     public void initialize() {
@@ -78,6 +81,7 @@ public class TeleMain extends CommandOpMode {
 
         flyWheel = new Motor(hardwareMap, "shoot");
         flyWheel.resetEncoder();
+        flyWheel.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeA = new Motor(hardwareMap, "intakeA");
         intakeB = new Motor(hardwareMap, "intakeB", Motor.GoBILDA.RPM_312);
         intakeB.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -99,9 +103,9 @@ public class TeleMain extends CommandOpMode {
 
         //FlickerAction
         flickerAction = new TimedAction(
-                ()-> flicker.setPosition(0.90),
-                ()-> flicker.setPosition(0.55),
-                350,
+                ()-> flicker.setPosition(0.37),
+                ()-> flicker.setPosition(0.6),
+                115,
                 true
         );
 
@@ -114,14 +118,13 @@ public class TeleMain extends CommandOpMode {
         bL.motor.setDirection(DcMotor.Direction.FORWARD);
 
         fL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         driveSystem = new DriveSystem(fL, fR, bL, bR);
-        driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX, ()->mult);
+        driveCommand = new Com_Drive(driveSystem, m_driverOp::getLeftX, m_driverOp::getLeftY, m_driverOp::getRightX);
 
-        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, voltageSensor);
+        shooterSystem = new ShooterSubsystem(flyWheel, flicker, flickerAction, voltageSensor, ()->shootMult);
         shooterCommand = new Com_Shooter(shooterSystem);
 
         intakeSystem = new IntakeSubsystem(intakeA, intakeB);
@@ -143,49 +146,42 @@ public class TeleMain extends CommandOpMode {
 //        slowDrive = new GamepadButton(m_driverOp, GamepadKeys.Button.Y)
 //                .toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
 
-        m_driverOp.getGamepadButton(GamepadKeys.Button.Y)
-                .toggleWhenPressed(()->mult = 0.75, ()->mult = 1.0);
-
         m_driverOp.getGamepadButton(GamepadKeys.Button.BACK)
                 .toggleWhenPressed(
                         autoPowershotsCommand = new SequentialCommandGroup(
                         new InstantCommand(() -> {
                             fL.motor.setDirection(DcMotor.Direction.REVERSE);
                             bL.motor.setDirection(DcMotor.Direction.REVERSE);
-                            fL.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                            fR.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                            bL.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                            bR.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                            fL.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            bR.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            bL.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                            fL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                            bR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                            bL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                         }, driveSystem),
                         new InstantCommand(()->drive.setPoseEstimate(new Pose2d(63, -10, Math.toRadians(180)))),
                         new TrajectoryFollowerCommand(drive, drive.trajectoryBuilder(new Pose2d(63, -10, Math.toRadians(180)), true)
-                                .lineToConstantHeading(new Vector2d(0.9, -15.0))
+                                .lineToLinearHeading(new Pose2d(0.9, -15.0, Math.toRadians(180)))
                                 .build()),
                         new InstantCommand(shooterSystem::flickPos).andThen(new WaitCommand(350)),
-                        new TurnCommand(drive, Math.toRadians(-6.5))
+                        new TurnCommand(drive, Math.toRadians(-6.0))
                                 .alongWith(new InstantCommand(shooterSystem::homePos), new WaitCommand(500)),
                         new InstantCommand(shooterSystem::flickPos).andThen(new WaitCommand(350)),
-                        new TurnCommand(drive, Math.toRadians(-5.9))
+                        new TurnCommand(drive, Math.toRadians(-7.5))
                                 .alongWith(new InstantCommand(shooterSystem::homePos), new WaitCommand(500)),
                         new InstantCommand(shooterSystem::flickPos).andThen(new WaitCommand(350)),
                         new InstantCommand(shooterSystem::homePos),
                         new InstantCommand(() -> {
                             fL.motor.setDirection(DcMotor.Direction.FORWARD);
                             bL.motor.setDirection(DcMotor.Direction.FORWARD);
-                            fL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                            fR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                            bL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                            bR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                         })
                 ), new InstantCommand(()->{
                         autoPowershotsCommand.cancel();
                         shooterSystem.homePos();
                         fL.motor.setDirection(DcMotor.Direction.FORWARD);
                         bL.motor.setDirection(DcMotor.Direction.FORWARD);
-                        fL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                        fR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                        bL.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                        bR.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }));
 
         m_driverOp.getGamepadButton(GamepadKeys.Button.A).whenHeld(shooterCommand);
@@ -196,6 +192,16 @@ public class TeleMain extends CommandOpMode {
         m_driverOp.getGamepadButton(GamepadKeys.Button.X).whenPressed(grabberCommand);
         m_driverOp.getGamepadButton(GamepadKeys.Button.B).toggleWhenPressed(putDownCommand, pickUpCommand);
 
+        m_driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .toggleWhenPressed(
+                        new SequentialCommandGroup(
+                                new InstantCommand(()->{shootMult = 0.55;})
+                        ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(()->{shootMult = 1.0;})
+
+                        )
+                );
         m_driverOp.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .toggleWhenPressed(
                         new SequentialCommandGroup(
@@ -210,10 +216,9 @@ public class TeleMain extends CommandOpMode {
 
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
-//        schedule(new RunCommand(() -> {
-//            telemetry.addData("FlywheelSpeed", flyWheel.getCorrectedVelocity());
-//            telemetry.addData("wobbleposition", arm.getCurrentPosition());
-//            telemetry.update();
-//        }));
+        schedule(new RunCommand(() -> {
+            telemetry.addData("FlywheelSpeed", shootMult);
+            telemetry.update();
+        }));
     }
 }

@@ -41,9 +41,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -55,6 +52,10 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
@@ -107,6 +108,7 @@ import org.firstinspires.ftc.robotcore.internal.network.WifiDirectChannelChanger
 import org.firstinspires.ftc.robotcore.internal.network.WifiMuteEvent;
 import org.firstinspires.ftc.robotcore.internal.network.WifiMuteStateMachine;
 import org.firstinspires.ftc.robotcore.internal.opmode.ClassManager;
+import org.firstinspires.ftc.robotcore.internal.system.AppAliveNotifier;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
@@ -123,7 +125,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
-{
+  {
   public static final String TAG = "RCActivity";
   public String getTag() { return TAG; }
 
@@ -376,6 +378,9 @@ public class FtcRobotControllerActivity extends Activity
 
     FtcAboutActivity.setBuildTimeFromBuildConfig(BuildConfig.BUILD_TIME);
 
+    // check to see if there is a preferred Wi-Fi to use.
+    checkPreferredChannel();
+
     FtcDashboard.start();
   }
 
@@ -397,17 +402,6 @@ public class FtcRobotControllerActivity extends Activity
   protected void onStart() {
     super.onStart();
     RobotLog.vv(TAG, "onStart()");
-
-    // If we're start()ing after a stop(), then shut the old robot down so
-    // we can refresh it with new state (e.g., with new hw configurations)
-    shutdownRobot();
-
-    updateUIAndRequestRobotSetup();
-
-    cfgFileMgr.getActiveConfigAndUpdateUI();
-
-    // check to see if there is a preferred Wi-Fi to use.
-    checkPreferredChannel();
 
     entireScreenLayout.setOnTouchListener(new View.OnTouchListener() {
       @Override
@@ -577,7 +571,7 @@ public class FtcRobotControllerActivity extends Activity
       startActivityForResult(intentConfigure, RequestCode.CONFIGURE_ROBOT_CONTROLLER.ordinal());
     }
     else if (id == R.id.action_settings) {
-      // historical: this once erroneously used FTC_CONFIGURE_REQUEST_CODE_ROBOT_CONTROLLER
+	  // historical: this once erroneously used FTC_CONFIGURE_REQUEST_CODE_ROBOT_CONTROLLER
       Intent settingsIntent = new Intent(AppUtil.getDefContext(), FtcRobotControllerSettingsActivity.class);
       startActivityForResult(settingsIntent, RequestCode.SETTINGS_ROBOT_CONTROLLER.ordinal());
       return true;
@@ -604,13 +598,16 @@ public class FtcRobotControllerActivity extends Activity
         }
       }
 
+      // Allow the user to use the Control Hub operating system's UI, instead of relaunching the app
+      AppAliveNotifier.getInstance().disableAppWatchdogUntilNextAppStart();
+
       //Finally, nuke the VM from orbit
       AppUtil.getInstance().exitApplication();
 
       return true;
     }
 
-    return super.onOptionsItemSelected(item);
+   return super.onOptionsItemSelected(item);
   }
 
   @Override
@@ -654,7 +651,9 @@ public class FtcRobotControllerActivity extends Activity
     // was some historical confusion about launch codes here, so we err safely
     if (request == RequestCode.CONFIGURE_ROBOT_CONTROLLER.ordinal() || request == RequestCode.SETTINGS_ROBOT_CONTROLLER.ordinal()) {
       // We always do a refresh, whether it was a cancel or an OK, for robustness
+      shutdownRobot();
       cfgFileMgr.getActiveConfigAndUpdateUI();
+      updateUIAndRequestRobotSetup();
     }
   }
 
@@ -686,12 +685,12 @@ public class FtcRobotControllerActivity extends Activity
       callback.updateRobotStatus(controllerService.getRobotStatus());
       // Only show this first-time toast on headless systems: what we have now on non-headless suffices
       requestRobotSetup(LynxConstants.isRevControlHub()
-              ? new Runnable() {
-        @Override public void run() {
-          showRestartRobotCompleteToast(R.string.toastRobotSetupComplete);
-        }
-      }
-              : null);
+        ? new Runnable() {
+            @Override public void run() {
+              showRestartRobotCompleteToast(R.string.toastRobotSetupComplete);
+            }
+          }
+        : null);
     }
   }
 
@@ -738,8 +737,8 @@ public class FtcRobotControllerActivity extends Activity
     requestRobotSetup(new Runnable() {
       @Override public void run() {
         showRestartRobotCompleteToast(R.string.toastRestartRobotComplete);
-      }
-    });
+        }
+      });
   }
 
   private void showRestartRobotCompleteToast(@StringRes int resid) {

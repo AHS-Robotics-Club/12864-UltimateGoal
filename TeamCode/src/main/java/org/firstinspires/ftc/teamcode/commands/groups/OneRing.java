@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.commands.Com_EndAutoPickUp;
 import org.firstinspires.ftc.teamcode.commands.Com_Intake;
 import org.firstinspires.ftc.teamcode.commands.Com_PickUp;
 import org.firstinspires.ftc.teamcode.commands.Com_PutDown;
@@ -26,12 +27,10 @@ import java.time.Instant;
 @Config
 public class OneRing extends SequentialCommandGroup {
 
-    public static double xBox = 24.0, yBox = -36.0;
-    public static double shootPosX = -45, shootPosY = 22.0;
-    public static double secondWobbleX = -37.6, secondWobbleY = -21.0;
-    public static double finalX = -10.0, finalY = 0.0;
-    public static double backAmnt = 35.0;
-
+    public static double xBox = 26.0, yBox = -44.0;
+    public static double shootPosX = -38.0, shootPosY = 24.0;
+    public static double secondWobbleX = -32, secondWobbleY = -22.0;
+    public static double finalX = -5.5, finalY = 1.0;
 
     private Pose2d startPose = new Pose2d(-63.0, -40.0, Math.toRadians(180.0));
 
@@ -64,26 +63,26 @@ public class OneRing extends SequentialCommandGroup {
 
 //        Vector2d secondWobble = traj2.end().vec().plus(new Vector2d(secWobblePosX, secWobblePosY));
 
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end(), Math.toRadians(192.0))
                 .splineToLinearHeading(new Pose2d(-20.0,-20.0, 0.0), Math.toRadians(-90.0))
                 .build();
 
-        Trajectory trajAlmost4 = drive.trajectoryBuilder(traj3.end(), 0.0)
+        Trajectory trajAlmost4 = drive.trajectoryBuilder(traj3.end())
                 .splineToConstantHeading(new Vector2d(secondWobbleX, secondWobbleY), 0.0)
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(trajAlmost4.end(), 0)
+        Trajectory traj4 = drive.trajectoryBuilder(trajAlmost4.end())
                 .lineToConstantHeading(traj3.end().vec().plus(new Vector2d(0, 8)))
-                .splineToSplineHeading((new Pose2d(0.0, -18, Math.toRadians(180.0))), Math.toRadians(-90.0))
+                .splineToSplineHeading((new Pose2d(0.0, -18, Math.toRadians(181.0))), Math.toRadians(-90.0))
                 .splineToConstantHeading(traj1.end().vec().plus(new Vector2d(finalX, finalY)), 0.0)
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .forward(backAmnt)
+                .splineToConstantHeading(traj4.end().vec().plus(new Vector2d(-35.0, 7.0)), 0.0)
                 .build();
 
-        Trajectory traj6 = drive.trajectoryBuilder(traj5.end(), Math.toRadians(10))
-                .splineToSplineHeading(traj4.end().plus(new Pose2d(-10.0, 0.0, 0.0)), 0.0)
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .splineToSplineHeading(traj4.end().plus(new Pose2d(-10.0, 1.0, 0.0)), 0.0)
                 .build();
 
         addCommands(
@@ -93,8 +92,9 @@ public class OneRing extends SequentialCommandGroup {
                 ),
                 new TrajectoryFollowerCommand(drive, traj1),
                 new InstantCommand(wobbleSystem::openGrabber, wobbleSystem),
-                new WaitCommand(800),
+                new WaitCommand(700),
                 new Com_PickUp(wobbleSystem).raceWith(new WaitCommand(750)),
+                new TurnCommand(drive, Math.toRadians(12)),
                 new TrajectoryFollowerCommand(drive, traj2),
                 new RapidFireCommand(shooter),
                 new ParallelDeadlineGroup(
@@ -103,7 +103,7 @@ public class OneRing extends SequentialCommandGroup {
                 ),
                 new TrajectoryFollowerCommand(drive, trajAlmost4),
                 new InstantCommand(wobbleSystem::closeGrabber, wobbleSystem),
-                new WaitCommand(800),
+                new WaitCommand(700),
                 new ParallelDeadlineGroup(
                         new TrajectoryFollowerCommand(drive, traj4),
                         new Com_PickUp(wobbleSystem)
@@ -113,12 +113,12 @@ public class OneRing extends SequentialCommandGroup {
                 new WaitCommand(500),
                 new ParallelDeadlineGroup(
                         new TrajectoryFollowerCommand(drive, traj5),
-                        new Com_PickUp(wobbleSystem),
+                        new Com_EndAutoPickUp(wobbleSystem),
                         new InstantCommand(intakeSystem::start)
                 ),
                 new WaitCommand(400).andThen(new InstantCommand(intakeSystem::stop)),
-                new TurnCommand(drive, Math.toRadians(10)),
-                new RapidFireCommand(shooter, 2),
+                new TurnCommand(drive, Math.toRadians(10.0)),
+                new RapidFireCommand(shooter, 1),
                 new TrajectoryFollowerCommand(drive, traj6)
         );
     }

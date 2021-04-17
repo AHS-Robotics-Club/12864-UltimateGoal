@@ -60,10 +60,12 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
+    //10, 0, 4
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(18, 1, 3);
+    //10.5, ,0, 2
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0, 2);
 
-    public static double LATERAL_MULTIPLIER = 1.1059;
+    public static double LATERAL_MULTIPLIER = 1.0059;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -132,10 +134,12 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+//        imu = hardwareMap.get(BNO055IMU.class, "imu");
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+//        imu.initialize(parameters);
+        //no more imu
+
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -171,6 +175,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -395,6 +400,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightFront.setPower(v3);
     }
 
+    //no more imu stuff
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
